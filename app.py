@@ -20,26 +20,46 @@ def get_secret(key, default=None):
     except:
         return os.getenv(key, default)
 
-# Initialize DeepSeek client for chat
-client = OpenAI(
-    api_key=get_secret("DEEPSEEK_API_KEY"),
-    base_url=get_secret("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1")
-)
-
-# Initialize Groq for vision
-groq_api_key = get_secret("GROQ_API_KEY")
-groq_client = None
-if groq_api_key:
-    groq_client = OpenAI(
-        api_key=groq_api_key,
-        base_url="https://api.groq.com/openai/v1"
-    )
-
-# Page configuration
+# Page configuration - MUST be first Streamlit command
 st.set_page_config(
     page_title="জননী এআই - মাতৃস্বাস্থ্য সহায়ক",
     page_icon="🤰",
     layout="wide",
+)
+
+# Check for API keys
+deepseek_key = get_secret("DEEPSEEK_API_KEY")
+groq_key = get_secret("GROQ_API_KEY")
+
+if not deepseek_key or not groq_key:
+    st.error("⚠️ API Keys কনফিগার করা হয়নি!")
+    st.markdown("""
+    ### Streamlit Cloud এ Secrets যোগ করুন:
+    
+    1. **Manage app** → **Settings** → **Secrets** এ যান
+    2. নিচের ফরম্যাটে আপনার API keys যোগ করুন:
+    
+    ```toml
+    DEEPSEEK_API_KEY = "your-deepseek-api-key"
+    DEEPSEEK_BASE_URL = "https://api.deepseek.com/v1"
+    GROQ_API_KEY = "your-groq-api-key"
+    ```
+    
+    3. **Save** করুন
+    4. অ্যাপ **Reboot** করুন
+    """)
+    st.stop()
+
+# Initialize DeepSeek client for chat
+client = OpenAI(
+    api_key=deepseek_key,
+    base_url=get_secret("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1")
+)
+
+# Initialize Groq for vision
+groq_client = OpenAI(
+    api_key=groq_key,
+    base_url="https://api.groq.com/openai/v1"
 )
 
 # ====================================================================

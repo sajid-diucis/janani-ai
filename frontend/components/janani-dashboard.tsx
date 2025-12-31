@@ -31,7 +31,7 @@ import { useAuth } from "@/context/auth-context"
 import { offlineManager } from "@/lib/offline-manager"
 import { LoginPage } from "@/components/login-page"
 
-const API_BASE_URL = "http://localhost:8000"
+const API_BASE_URL = ""
 
 type Tab = "home" | "nutrition"
 

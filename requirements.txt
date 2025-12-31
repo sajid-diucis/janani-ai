@@ -1,0 +1,6 @@
+﻿streamlit>=1.28.0
+python-dotenv
+gtts
+openai
+SpeechRecognition
+Pillow

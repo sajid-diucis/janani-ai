@@ -1,0 +1,67 @@
+### **1. Phonological Transformation Rules (The "Sound" Logic)**
+
+Noakhali has highly consistent rules for transforming Standard Bengali (SCB) sounds. Use these as "RegEx" rules:
+
+| Standard Bengali Sound | Noakhali Sound | Rule Description | Example (SCB → Noakhali) |
+| --- | --- | --- | --- |
+| **P (প)** | **H (হ)** | Initial 'P' almost always becomes 'H'. | *Pani* (Water) → **Hani** |
+| **Ph (ফ)** | **H/F (হ/ফ)** | Aspirated 'Ph' softens to a glottal 'H'. | *Phul* (Flower) → **Hul** |
+| **S/Sh (স/শ)** | **H (হ)** | Sibilants often shift to a glottal 'H'. | *Sokal* (Morning) → **Hokal**, *Shob* → **Hob/Hobuggo** |
+| **Ch (চ/ছ)** | **S/Ts (ছ/স)** | Palatals shift to alveolar fricatives. | *Chhele* (Boy) → **Hola** |
+| **K (ক)** | **X (খ/Guttural)** | 'K' often becomes a deep guttural 'X'. | *Kemon* (How) → **Xen** |
+| **B/Bh (ব/ভ)** | **V/B (ব/ভ)** | Softens or de-aspirates. | *Bhalo* (Good) → **Valo/Balo** |
+
+---
+
+### **2. Advanced Morphological Data (Grammar)**
+
+#### **Noun Case Endings**
+* **Possessive (My/His):** Uses *-ar* or *-r* instead of *-er*.
+* *Standard:* Amar (Mine) → *Noakhali:* **Añr** (আঁঁর)
+* *Standard:* Tar (His) → *Noakhali:* **Her/Hetir** (হেঁঁঁর)
+
+* **Locative (In/At):** Uses *-ot* instead of *-e*.
+* *Standard:* Barite (At home) → *Noakhali:* **Bari-ot** (বাড়িওত)
+
+#### **Verb Tense Patterns**
+* **Present Continuous (Doing):**
+* *Standard:* Korchi (I am doing) → *Noakhali:* **Xiyer** (কিয়ের)
+* *Standard:* Jacchi (I am going) → *Noakhali:* **Zaiyer** (যাইয়ের)
+
+* **Future (Will do):**
+* *Standard:* Korbo (I will do) → *Noakhali:* **Xijjom** (কিজ্জোম)
+* *Standard:* Jabo (I will go) → *Noakhali:* **Zaiyum/Zaum** (যাইউম)
+
+* **Negative Imperative (Don't do):**
+* *Standard:* Korona (Don't do) → *Noakhali:* **Xio na / Xitanno** (কিতান্নো)
+
+---
+
+### **3. Deep Lexicon (Core Vocabulary)**
+
+| English | Standard Bangla | Noakhali Dialect |
+| --- | --- | --- |
+| **Boy / Son** | Chhele (ছেলে) | **Hola / Hut** (হোলা/হুত) |
+| **Girl / Daughter** | Meye (মেয়ে) | **Maiya / Jei** (মাইয়া/জেই) |
+| **Why** | Keno (কেন) | **Kiya / Kijje** (কীয়া/কিজ্জে) |
+| **All / Everyone** | Sob/Shokol (সব/সকল) | **Beggun** (বেগগুন) |
+| **Money** | Taka (টাকা) | **Teya** (টেঁয়া) |
+| **He / She** | Shey (সে) | **Hete (Male) / Heti (Female)** |
+| **To them** | Tader (তাদের) | **Hego** (হেগো) |
+| **Yesterday/Tomorrow** | Ago/Pichone | **Hailyah / Gailla** |
+
+---
+
+### **4. Syntactic Phrases**
+
+* **Greeting/Status:**
+* *Standard:* Tumi kemon acho? (How are you?)
+* *Noakhali:* **Tui xen asos?** (তুই কেন আছোস?)
+
+* **Directional Guidance:**
+* *Standard:* Ekhane boshen. (Sit here.)
+* *Noakhali:* **Iyan-o boisen.** (ইয়ানো বইসেন।)
+
+* **Reassurance:**
+* *Standard:* Bhoy paben na, shob thik hoye jabe.
+* *Noakhali:* **Vay haiyen na, beggun thik oi yaibo.** (ভয় হাইয়েন না, বেগগুন ঠিক অই যাইবো।)

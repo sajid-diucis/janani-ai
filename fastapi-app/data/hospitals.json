@@ -1,0 +1,114 @@
+[
+    {
+        "id": "hosp_1",
+        "name": "ঢাকা মেডিকেল কলেজ হাসপাতাল",
+        "name_en": "Dhaka Medical College Hospital",
+        "address": "Ramna, Dhaka",
+        "lat": 23.7258,
+        "lng": 90.3973,
+        "phone": "02-55165001",
+        "has_maternity": true,
+        "type": "government",
+        "emergency_unit": "Gynae Emergency (Gate 2)",
+        "doctors": [
+            {
+                "name": "ডাঃ ফাতেমা রহমান",
+                "role": "Senior Consultant (Gynae)",
+                "available": "24/7",
+                "phone": "01711223344"
+            },
+            {
+                "name": "ডাঃ নাসরিন সুলতানা",
+                "role": "Emergency Medical Officer",
+                "available": "On-Call",
+                "phone": "01711223355"
+            }
+        ]
+    },
+    {
+        "id": "hosp_5",
+        "name": "খুলনা মেডিকেল কলেজ হাসপাতাল",
+        "name_en": "Khulna Medical College Hospital",
+        "address": "Khulna",
+        "lat": 22.8286,
+        "lng": 89.5401,
+        "phone": "041-760350",
+        "has_maternity": true,
+        "type": "government",
+        "emergency_unit": "Maternity Ward (New Building)",
+        "doctors": [
+            {
+                "name": "ডাঃ তাসলিমা আখতার",
+                "role": "Associate Professor",
+                "available": "8AM-10PM",
+                "phone": "01999887766"
+            },
+            {
+                "name": "ডাঃ আব্দুল্লাহ আল মামুন",
+                "role": "Gynae Specialist",
+                "available": "24/7",
+                "phone": "01999887755"
+            }
+        ]
+    },
+    {
+        "id": "hosp_4",
+        "name": "রাজশাহী মেডিকেল কলেজ হাসপাতাল",
+        "name_en": "Rajshahi Medical College Hospital",
+        "address": "Rajshahi",
+        "lat": 24.3695,
+        "lng": 88.5833,
+        "phone": "0721-772150",
+        "has_maternity": true,
+        "type": "government",
+        "emergency_unit": "Labour Room, Ground Floor",
+        "doctors": [
+            {
+                "name": "ডাঃ জিন্নাত চৌধুরী",
+                "role": "Consultant",
+                "available": "24/7",
+                "phone": "01555443322"
+            }
+        ]
+    },
+    {
+        "id": "hosp_6",
+        "name": "বরিশাল শেরে বাংলা মেডিকেল কলেজ",
+        "name_en": "Barisal Sher-e-Bangla Medical College",
+        "address": "Barisal",
+        "lat": 22.6868,
+        "lng": 90.3547,
+        "phone": "0431-2173541",
+        "has_maternity": true,
+        "type": "government",
+        "emergency_unit": "Ward 12 (Gynaecology)",
+        "doctors": [
+            {
+                "name": "ডাঃ মাহিনুর বেগম",
+                "role": "Senior Surgeon",
+                "available": "24/7",
+                "phone": "01333221144"
+            }
+        ]
+    },
+    {
+        "id": "hosp_10",
+        "name": "নোয়াখালী জেনারেল হাসপাতাল",
+        "name_en": "Noakhali General Hospital",
+        "address": "Maijdee, Noakhali",
+        "lat": 22.8687,
+        "lng": 91.1005,
+        "phone": "0321-62025",
+        "has_maternity": true,
+        "type": "government",
+        "emergency_unit": "Matri Monzil (Building B)",
+        "doctors": [
+            {
+                "name": "ডাঃ রেবেকা সুলতানা",
+                "role": "Consultant (Gynae)",
+                "available": "24/7",
+                "phone": "01811223311"
+            }
+        ]
+    }
+]

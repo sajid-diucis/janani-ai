@@ -1,0 +1,75 @@
+{
+    "name": "Janani AI - AR জরুরি সহায়তা",
+    "short_name": "AR সহায়তা",
+    "description": "অফলাইন-ফার্স্ট AR জরুরি প্রসব সহায়ক - গ্রামীণ বাংলাদেশের জন্য",
+    "start_url": "/ar-dashboard",
+    "display": "standalone",
+    "orientation": "portrait",
+    "theme_color": "#D32F2F",
+    "background_color": "#0a0a0a",
+    "lang": "bn",
+    "icons": [
+        {
+            "src": "/static/icons/ar-icon-72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icons/ar-icon-96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icons/ar-icon-128.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icons/ar-icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/static/icons/ar-icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["health", "medical", "emergency"],
+    "screenshots": [],
+    "prefer_related_applications": false,
+    "related_applications": [],
+    "shortcuts": [
+        {
+            "name": "জরুরি রক্তপাত",
+            "short_name": "PPH",
+            "description": "প্রসব পরবর্তী রক্তপাত জরুরি প্রোটোকল",
+            "url": "/ar-dashboard?scenario=bleeding",
+            "icons": [{"src": "/static/icons/blood-icon.png", "sizes": "96x96"}]
+        },
+        {
+            "name": "খিঁচুনি/একলাম্পসিয়া",
+            "short_name": "Seizure",
+            "description": "একলাম্পসিয়া জরুরি প্রোটোকল",
+            "url": "/ar-dashboard?scenario=seizure",
+            "icons": [{"src": "/static/icons/seizure-icon.png", "sizes": "96x96"}]
+        },
+        {
+            "name": "নবজাতক পুনরুজ্জীবন",
+            "short_name": "Newborn",
+            "description": "নবজাতকের পুনরুজ্জীবন প্রোটোকল",
+            "url": "/ar-dashboard?scenario=newborn",
+            "icons": [{"src": "/static/icons/baby-icon.png", "sizes": "96x96"}]
+        }
+    ],
+    "serviceworker": {
+        "src": "/static/ar-emergency-sw.js",
+        "scope": "/",
+        "update_via_cache": "imports"
+    }
+}

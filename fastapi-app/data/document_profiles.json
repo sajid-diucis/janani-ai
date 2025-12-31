@@ -1,0 +1,9 @@
+{
+  "persist_test_user": {
+    "filename": "test.docx",
+    "structured_info": {
+      "test": "data",
+      "extracted_at": "now"
+    }
+  }
+}

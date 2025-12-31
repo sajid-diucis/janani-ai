@@ -1,0 +1,52 @@
+JANANI AI (DIGITAL MIDWIFE) - FULL APP DETAILS
+
+Janani AI is a state-of-the-art maternal health platform designed specifically for the Bangladeshi context. It combines WHO clinical guidelines with voice-first AI and AR technology to provide accessible care.
+
+---------------------------------------------------------
+CORE FEATURES & LOGIC
+---------------------------------------------------------
+
+1. Digital Midwife (Voice Triage)
+- Deterministic Triage: Uses a complex decision tree based on WHO protocols to detect "Red Flag" symptoms (e.g., bleeding, severe headache, vision changes).
+- Dialect Support: Specially tuned for Bengali, including regional dialects like Noakhali. It uses phonological shift rules to understand and respond in local dialects.
+- Voice-First: Integrated STT (Speech-to-Text) and TTS (Text-to-Speech) for hands-free interaction.
+
+2. Weekly Care Planner
+- Personalized Development: Tracks baby and mother changes week-by-week.
+- WHO Guidelines: Recommendations for nutrition, safe exercise, and medical checkups are dynamically generated based on the patient's trimester.
+- Risk-Adjusted: Automatically adjusts advice based on the user's risk profile (age, BMI, pre-existing conditions).
+
+3. AR Emergency Labor Assistant
+- Offline-First: Uses MediaPipe WASM to run camera-based AI directly in the browser without needing internet.
+- Real-time Guidance: Provides step-by-step AR protocols for emergency delivery situations when medical help is unavailable.
+
+4. Nutrition & Food (RAG + Vision)
+- AI Food Analysis: Users can upload photos of food or ask questions. The app uses Vision AI and RAG (Retrieval-Augmented Generation) to check if the food is safe and beneficial according to pregnancy guidelines.
+- Recommendation Engine: Provides personalized diet plans.
+
+5. Medical Document Support
+- Document Parsing: Agents and users can upload .docx or .doc medical reports. The system extracts medical history to build a precise risk profile.
+
+---------------------------------------------------------
+TECHNICAL ARCHITECTURE
+---------------------------------------------------------
+
+Component               | Technology
+----------------------- | ---------------------------------------
+Backend Framework       | FastAPI (Asynchronous Python)
+Primary AI (LLM)        | DeepSeek-V3 / DeepSeek-R1 (via API)
+Vision & Fast Inference | Groq (LPU)
+AR & Image Logic        | MediaPipe, WASM, OpenCV
+Voice Processing        | Google gTTS, SpeechRecognition
+Frontend                | Jinja2, Vanilla CSS, Modern JavaScript
+Safety Guardrails       | WHO Knowledge Graph (custom implementation)
+
+---------------------------------------------------------
+KEY DIRECTORY BREAKDOWN
+---------------------------------------------------------
+- routers/: Maps API endpoints for voice, chat, vision, and emergency.
+- services/: The "brain" of the app, containing triage logic, care plan generation, and AI integrations.
+- templates/: Modern, responsive web interface designs (index.html, ar_dashboard.html).
+- data/: Contains guidelines and knowledge bases for RAG.
+
+Running URL: http://127.0.0.1:8000/

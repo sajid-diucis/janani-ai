@@ -1,0 +1,15 @@
+
+services:
+  - type: web
+    name: janani-ai
+    env: docker
+    plan: free # or starter
+    dockerContext: . # Uses the root Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ELEVENLABS_API_KEY
+        sync: false # User must enter this in Dashboard
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

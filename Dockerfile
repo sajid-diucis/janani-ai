@@ -2,17 +2,22 @@
 # ==========================================
 # STAGE 1: Build Frontend (Next.js)
 # ==========================================
-FROM node:20-alpine AS frontend-builder
+# ==========================================
+# STAGE 1: Build Frontend (Next.js)
+# ==========================================
+FROM node:20-slim AS frontend-builder
 WORKDIR /app/frontend
 
-# Install dependencies first (Caching)
+# Install dependencies with legacy peer deps for safety
 COPY frontend/package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY frontend/ .
 
 # Build Static Export (output -> /app/frontend/out)
+# Disable telemetry during build
+ENV NEXT_TELEMETRY_DISABLED 1
 RUN npm run build
 
 # ==========================================
@@ -22,9 +27,11 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-# Install system dependencies (FFmpeg for Audio)
+# Install system dependencies (FFmpeg + Build Tools)
 RUN apt-get update && apt-get install -y \
     ffmpeg \
+    build-essential \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies

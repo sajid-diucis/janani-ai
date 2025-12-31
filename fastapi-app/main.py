@@ -1,4 +1,9 @@
-﻿from fastapi import FastAPI, Request
+﻿# Handle SQLite for ChromaDB (Render/Linux fix)
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware

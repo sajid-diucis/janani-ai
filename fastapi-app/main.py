@@ -87,15 +87,16 @@ async def ar_dashboard_page(request: Request):
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint"""
     return {
         "status": "healthy",
         "app": settings.app_name,
         "version": settings.app_version,
         "apis_configured": {
-            "deepseek": bool(settings.deepseek_api_key),
+            "elevenlabs": bool(settings.elevenlabs_api_key),
+            "gemini": bool(settings.gemini_api_key and len(settings.gemini_api_key) > 5),
             "groq": bool(settings.groq_api_key),
-            "elevenlabs": bool(settings.elevenlabs_api_key)
+            "deepseek": bool(settings.deepseek_api_key),
+            "gemini_key_prefix": settings.gemini_api_key[:4] if settings.gemini_api_key else "NONE"
         }
     }
 

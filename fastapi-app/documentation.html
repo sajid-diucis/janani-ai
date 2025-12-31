@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Janani AI Technical Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #fff;
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-top: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: #16a085;
+            margin-top: 20px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            overflow-x: auto;
+            border-radius: 4px;
+        }
+
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background: #f9f9f9;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .emergency {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .safety {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Janani AI: The Complete Technical Blueprint</h1>
+
+    <p>Janani is a high-availability, safety-critical maternal health OS. It is designed to operate in low-bandwidth,
+        low-literacy environments while maintaining strict clinical compliance (WHO-standard).</p>
+
+    <hr>
+
+    <h2>1. Technical Stack & Architecture</h2>
+
+    <h3>Frontend Layer</h3>
+    <ul>
+        <li><strong>Framework</strong>: Next.js 15 (CSR-Only for Static Portability).</li>
+        <li><strong>Core Design</strong>: Glassmorphic UI using Vanilla CSS 3.0 variables; custom micro-animations for
+            user engagement.</li>
+        <li><strong>Offline Persistence</strong>: PWA with Service Workers (<code>next-pwa</code>) and IndexedDB
+            (<code>offline-manager.ts</code>) for caching data bundles.</li>
+    </ul>
+
+    <h3>Backend Layer</h3>
+    <ul>
+        <li><strong>Language</strong>: Python 3.12 (Asynchronous).</li>
+        <li><strong>API Framework</strong>: FastAPI with Pydantic v2 data validation.</li>
+        <li><strong>Security</strong>: SHA-256 Auth system; Production-hardened with <code>pysqlite3-binary</code> for
+            ChromaDB compatibility on Linux.</li>
+    </ul>
+
+    <h3>Intelligence & Edge Computing</h3>
+    <ul>
+        <li><strong>Core LLM</strong>: Gemini 2.0 Flash (Primary) / DeepSeek (Fallback).</li>
+        <li><strong>Vision Engine</strong>: Groq Vision (meta-llama/llama-4-scout) for sub-second prescription and food
+            safety analysis.</li>
+        <li><strong>Local RAG</strong>: ChromaDB Vector Store.</li>
+        <li><strong>Edge Embeddings</strong>: Custom SHA-384 hashing algorithm (768-dim) for high-speed, offline-capable
+            search without external deps.</li>
+    </ul>
+
+    <hr>
+
+    <h2>2. Clinical Safety & Intelligence Layers</h2>
+
+    <h3>🛡️ WHO Guard Service</h3>
+    <p>A hardcoded validation layer that intercepts all AI responses before they reach the mother:</p>
+    <ul>
+        <li><strong>Medication Block</strong>: Detects and redacts any specific drug names or doses (e.g., Antibiotics,
+            Misoprostol) to prevent self-medication.</li>
+        <li><strong>Referral Enforcement</strong>: Scans AI response for danger signs (Danger Signs: Bleeding, Headache,
+            etc.); if a sign is found and "Hospital/Refer" is missing, the Guard blocks the message and appends a
+            critical warning.</li>
+    </ul>
+
+    <h3>🩺 Deterministic Triage Tree</h3>
+    <p>Unlike generic chatbots, Janani uses a "Safe-First" decision tree:</p>
+    <ul>
+        <li><strong>Multi-Dialect Keywords</strong>: Maps symptoms in <strong>Standard Bengali</strong>,
+            <strong>Sylheti</strong>, and <strong>Chittagonian</strong> (e.g., "Matha betha" vs "Mada bish").</li>
+        <li><strong>Priority Routing</strong>: Deterministic "Red Flags" (Bleeding, Seizures) bypass the AI and trigger
+            immediate AR Emergency Mode and Geolocation search.</li>
+    </ul>
+
+    <h3>🧠 Persona & Memory Module</h3>
+    <ul>
+        <li><strong>Persona</strong>: Janani Apu (Big Sister) - Empathetic, culturally observant, and non-judgmental.
+        </li>
+        <li><strong>Long-Term Memory</strong>: Stores patient concerns as objects (<code>PatientMemory</code>) with a
+            <code>resolved</code> status.</li>
+        <li><strong>Proactive Follow-up</strong>: On start-up, the AI scans memories and asks: <em>"Apu, is that pain in
+                your leg from last Tuesday better now?"</em></li>
+    </ul>
+
+    <hr>
+
+    <h2>3. Data & Clinical Models</h2>
+
+    <h3>Maternal Risk Profile</h3>
+    <p>Extremely high-density data object containing:</p>
+    <ul>
+        <li><strong>Obstetric History</strong>: Gravida (total pregnancies), Para (completed deliveries), LMP (Last
+            Menstrual Period).</li>
+        <li><strong>Automated Bio-Logic</strong>: Dynamic EDD (Expected Due Date) and Current Week calculation.</li>
+        <li><strong>Risk Assessment</strong>: BMI calculation; automated flags for Anemia, Hypertension, and Gestational
+            Diabetes.</li>
+        <li><strong>Social Factors</strong>: Distance to hospital, income, and education level factored into risk
+            scoring.</li>
+    </ul>
+
+    <h3>WHO Knowledge Graph</h3>
+    <p>A directed graph of maternal health facts:</p>
+    <ul>
+        <li><strong>Entities</strong>: Symptoms, Nutrition, Exercises.</li>
+        <li><strong>Relations</strong>: Maps symptoms to WHO-mandated clinical guidelines (e.g., "Blurred Vision" ->
+            "Assess for Pre-eclampsia").</li>
+    </ul>
+
+    <hr>
+
+    <h2>4. Specialized Modules (The Micro-Features)</h2>
+
+    <h3>🤰 AR Emergency Suite</h3>
+    <ul>
+        <li><strong>MediaPipe WASM</strong>: Client-side pose detection for body positioning.</li>
+        <li><strong>Emergency Scenarios</strong>:
+            <ul>
+                <li class="emergency">PPH (Bleeding)</li>: AR pulses for fundal massage.
+                <li><strong>Eclampsia (Seizure)</strong>: Arrows guiding to the left-lateral recovery position.</li>
+                <li><strong>Neonatal CPR</strong>: Built-in 110 BPM visual/audio metronome for chest compressions.</li>
+            </ul>
+        </li>
+        <li><strong>Power Save Mode</strong>: Switches from AR to 2D SVG animations if battery &lt;20% to save
+            life-critical device power.</li>
+    </ul>
+
+    <h3>🍱 Nutrition RAG System</h3>
+    <ul>
+        <li><strong>Profile-Aware Retrieval</strong>: Cross-references "Anemia" flag with High-Iron food entities in
+            ChromaDB.</li>
+        <li><strong>Vision Safety</strong>: Scans food photos; classifies as <span class="safety">Safe</span>,
+            <em>Caution</em>, or <span class="emergency">Unsafe</span> with nutritional breakdowns.</li>
+        <li><strong>Daily Variety Logic</strong>: Limits menu display to 2 unique items per meal to avoid choice
+            paralysis.</li>
+    </ul>
+
+    <h3>🎙️ Advanced Voice Pipeline</h3>
+    <ul>
+        <li><strong>Bilingual STT</strong>: Handles English-Bangla mixed speech (Code-switching).</li>
+        <li><strong>Resilient TTS</strong>: Multi-stage fallback: ElevenLabs (Jessica) -> gTTS -> Native Browser
+            SpeechSynthesis.</li>
+        <li><strong>Dialect Rule-set</strong>: Applies regional Noakhali/Sylheti rules to AI outputs via text-processing
+            proxies.</li>
+    </ul>
+
+    <hr>
+
+    <h2>5. Deployment Specs</h2>
+    <ul>
+        <li><strong>Platform</strong>: Render.com (Blueprint YAML).</li>
+        <li><strong>Container</strong>: Multi-stage Docker build; Python 3.12-slim base.</li>
+        <li><strong>Optimization</strong>: Static-export logic in Next.js allows the entire frontend to be served from
+            memory by FastAPI, reducing cold-start latency.</li>
+    </ul>
+
+</body>
+
+</html>

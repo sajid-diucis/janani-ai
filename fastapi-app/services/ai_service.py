@@ -29,7 +29,7 @@ class AIService:
             )
 
         # Initialize Gemini (OpenAI Compatible)
-        if settings.gemini_api_key:
+        if settings.gemini_api_key and len(settings.gemini_api_key) > 5:
             # Detect if using custom proxy (like OneBrain) or official Google
             base_url = settings.gemini_base_url
             

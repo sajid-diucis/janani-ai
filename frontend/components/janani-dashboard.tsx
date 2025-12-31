@@ -328,14 +328,11 @@ export function JananiDashboard() {
     } catch (error: any) {
       console.error("TTS Error, falling back to browser:", error)
 
-      // SHOW BRUTAL ALERT
-      alert(`TTS SERVER ERROR: ${error.message}\nFalling back to robotic voice.`)
-
-      // SHOW ERROR TO USER for Debugging
+      // Notify user gracefully
       toast({
-        title: "TTS Server Error",
-        description: `Falling back to robotic voice. Error: ${error.message}`,
-        variant: "destructive",
+        title: "ভয়েস সমস্যা / Voice Issue",
+        description: "এখন ডিজিটাল ভয়েস ব্যবহার করা হচ্ছে। / Using robotic voice.",
+        variant: "default",
       })
 
       // Fallback

@@ -9,6 +9,7 @@ FFMPEG_PATH = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Microsoft", "Win
 if os.path.exists(FFMPEG_PATH):
     os.environ["PATH"] = FFMPEG_PATH + os.pathsep + os.environ.get("PATH", "")
 
+
 class SpeechService:
     def __init__(self):
         self.recognizer = sr.Recognizer()
@@ -23,10 +24,6 @@ class SpeechService:
                 raise Exception("Input audio file is empty")
 
             from pydub import AudioSegment
-            
-            # Explicitly set ffmpeg path if strict dependency issues occur
-            # AudioSegment.converter = FFMPEG_PATH + "\\ffmpeg.exe" 
-            
             audio = AudioSegment.from_file(input_path)
             
             # Normalize for SpeechRecognition (16kHz, Mono, 16bit)
@@ -41,9 +38,6 @@ class SpeechService:
             return output_path
         except Exception as e:
             print(f"Audio conversion error: {e}")
-            # Identify if it's an ffmpeg issue
-            if "ffmpeg" in str(e).lower() or "converter" in str(e).lower():
-                print("CRITICAL: FFmpeg not found or not executable. Please install FFmpeg.")
             return input_path
     
     async def transcribe_audio(self, audio_file_path: str) -> Optional[str]:
@@ -67,22 +61,20 @@ class SpeechService:
         """
         Convert text to speech.
         Prioritizes ElevenLabs for high-quality conversational audio.
-        Falls back to gTTS.
+        Falls back to gTTS if ElevenLabs fails or is unconfigured.
         """
-        try:
-            clean_text = re.sub(r"[*#`]", "", text)
-            clean_text = re.sub(r"\s+", " ", clean_text).strip()
-            if len(clean_text) < 2: raise Exception("Text too short")
-
-            print(f"DEBUG: SERVICE KEY: {settings.elevenlabs_api_key}")
-            # Try ElevenLabs first (Conversational Voice)
-            if settings.elevenlabs_api_key:
-                print("STARTING ELEVENLABS REQUEST...")
+        clean_text = re.sub(r"[*#`]", "", text)
+        clean_text = re.sub(r"\s+", " ", clean_text).strip()
+        if len(clean_text) < 2: 
+            return b"" # Quiet failure for empty text
+            
+        # 1. Try ElevenLabs
+        if settings.elevenlabs_api_key:
+            try:
+                print(f"DEBUG: Attempting ElevenLabs TTS (Voice: {settings.elevenlabs_voice_id})")
                 from elevenlabs.client import ElevenLabs
-                
                 client = ElevenLabs(api_key=settings.elevenlabs_api_key)
                 
-                # Ensure generator is consumed to bytes
                 audio_generator = client.text_to_speech.convert(
                     voice_id=settings.elevenlabs_voice_id,
                     optimize_streaming_latency="0",
@@ -91,18 +83,24 @@ class SpeechService:
                     model_id=settings.elevenlabs_model_id,
                 )
                 
-                # Convert generator to bytes
                 audio_bytes = b"".join(chunk for chunk in audio_generator)
-                print(f"ELEVENLABS SUCCESS. Bytes: {len(audio_bytes)}")
-                return audio_bytes
+                if len(audio_bytes) > 100:
+                    print(f"ELEVENLABS SUCCESS. Bytes: {len(audio_bytes)}")
+                    return audio_bytes
+                else:
+                    print("ElevenLabs returned suspiciously small response, falling back...")
+            except Exception as e:
+                print(f"ELEVENLABS ERROR: {str(e)}")
+                # Continue to gTTS fallback
 
-            # Fallback to gTTS (Only if no key provided)
-            print("Using gTTS (No Key)...")
+        # 2. Fallback to gTTS
+        try:
+            print("Falling back to gTTS...")
             tts = gTTS(text=clean_text, lang=language, slow=False)
-            audio_bytes = io.BytesIO()
-            tts.write_to_fp(audio_bytes)
-            audio_bytes.seek(0)
-            return audio_bytes.read()
-            
+            audio_bytes_io = io.BytesIO()
+            tts.write_to_fp(audio_bytes_io)
+            audio_bytes_io.seek(0)
+            return audio_bytes_io.read()
         except Exception as e:
-            raise Exception(f"Voice error: {str(e)}")
+            print(f"gTTS ERROR: {str(e)}")
+            raise Exception(f"All TTS engines failed: {str(e)}")

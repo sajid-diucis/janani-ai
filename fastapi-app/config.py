@@ -44,10 +44,10 @@ class Settings(BaseSettings):
         "জবর", "অজঞন", "শবসকষট", "বম", "মথবযথ"
     ]
 
-    # ElevenLabs Configuration
-    elevenlabs_api_key: str = Field(default="", env="ELEVENLABS_API_KEY")
-    elevenlabs_voice_id: str = "cgSgspJ2msm6clMCkdW9" # Jessica
-    elevenlabs_model_id: str = "eleven_multilingual_v2"
+    # ElevenLabs
+    elevenlabs_api_key: Optional[str] = Field(None, env="ELEVENLABS_API_KEY")
+    elevenlabs_voice_id: str = Field("cg4D6CCsq8zgvSk79V9D", env="ELEVENLABS_VOICE_ID")
+    elevenlabs_model_id: str = Field("eleven_multilingual_v2", env="ELEVENLABS_MODEL_ID")
 
     class Config:
         env_file = str(BASE_DIR / ".env")

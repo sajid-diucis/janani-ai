@@ -46,7 +46,7 @@ class Settings(BaseSettings):
 
     # ElevenLabs
     elevenlabs_api_key: Optional[str] = Field(None, env="ELEVENLABS_API_KEY")
-    elevenlabs_voice_id: str = Field("cg4D6CCsq8zgvSk79V9D", env="ELEVENLABS_VOICE_ID")
+    elevenlabs_voice_id: str = Field("cgSgspJ2msm6clMCkdW9", env="ELEVENLABS_VOICE_ID")
     elevenlabs_model_id: str = Field("eleven_multilingual_v2", env="ELEVENLABS_MODEL_ID")
 
     class Config:

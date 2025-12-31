@@ -88,9 +88,15 @@ class SpeechService:
                     print(f"ELEVENLABS SUCCESS. Bytes: {len(audio_bytes)}")
                     return audio_bytes
                 else:
-                    print("ElevenLabs returned suspiciously small response, falling back...")
+                    print(f"ElevenLabs returned suspiciously small response ({len(audio_bytes)} bytes), falling back...")
             except Exception as e:
-                print(f"ELEVENLABS ERROR: {str(e)}")
+                # Capture specific error info (Quota, Auth, etc)
+                error_detail = str(e)
+                print(f"!!! ELEVENLABS CRITICAL ERROR: {error_detail}")
+                if "quota" in error_detail.lower():
+                    print("DIAGNOSTIC: You have run out of ElevenLabs characters.")
+                elif "unauthorized" in error_detail.lower() or "401" in error_detail:
+                    print("DIAGNOSTIC: Invalid ElevenLabs API Key.")
                 # Continue to gTTS fallback
 
         # 2. Fallback to gTTS

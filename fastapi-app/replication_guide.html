@@ -1,0 +1,161 @@
+<html><head>
+<style>
+    body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    blockquote { border-left: 5px solid #ccc; margin: 0; padding-left: 10px; color: #555; }
+    h1, h2, h3 { color: #333; }
+    code { background: #eee; padding: 2px 5px; border-radius: 3px; }
+</style>
+</head><body><h1>Feature Replication Guide</h1>
+<p>This document contains analysis and "prompts" to replicate specific features of the Janani AI system. Use these prompts to instruct an AI (or developer) to rebuild the feature from scratch.</p>
+<hr />
+<h2>1. Custom AI API Configuration (Smart Proxy Support)</h2>
+<h3>Context &amp; Problem</h3>
+<p>The application needed to support both:
+1.  <strong>Standard Google Gemini Keys</strong> (Official API).
+2.  <strong>Custom Proxy Keys</strong> (e.g., OneBrain app) which require a custom Base URL.
+3.  <strong>Deployment Variables</strong>: Render/Docker environments where variables might be missing or mismatched.</p>
+<p>The original code was hardcoded to the Proxy URL, causing immediate failure when a user tried to use a standard Google Key.</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>Goal</strong>: Flexible configuration that "just works" for both standard and proxy users.</li>
+<li><strong>Mechanism</strong>:<ol>
+<li>Load <code>GEMINI_BASE_URL</code> from environment (for manual overrides).</li>
+<li>Implement "Smart Detection": Check if key starts with <code>AIza</code> (Google Standard).</li>
+<li>If Standard Key -&gt; Force Official Google URL (Override env/default).</li>
+<li>If Non-Standard -&gt; Use Env URL or Default Proxy.</li>
+</ol>
+</li>
+</ul>
+<h3>Replication Prompt</h3>
+<blockquote>
+<p>"I need to configure a FastAPI service (<code>ai_service.py</code>) to connect to Google Gemini.</p>
+<p><strong>Requirements:</strong>
+1.  It must support a default <strong>Proxy URL</strong> (e.g., <code>onebrain.app</code>) for internal users.
+2.  It must ALSO support standard <strong>Google API Keys</strong> (<code>AIza...</code>) provided by external users.
+3.  <strong>Smart Switching</strong>:
+    - If the configured API Key starts with <code>AIza</code>, ignore the proxy URL and force the client to use the official <code>generativelanguage.googleapis.com</code> endpoint.
+    - Otherwise, use the configured <code>GEMINI_BASE_URL</code> or default proxy.
+4.  <strong>Environment Variables</strong>: Ensure <code>GEMINI_BASE_URL</code> is exposed in <code>config.py</code> so it can be manually set in production (Render) if needed for a <em>different</em> custom proxy."</p>
+</blockquote>
+<hr />
+<h2>2. Enhanced Error Reporting (Live Diagnostics)</h2>
+<h3>Context &amp; Problem</h3>
+<p>When the AI service failed on the live server, the chatbot returned a generic "AI not configured" message. This hid the actual error (e.g., <code>401 Unauthorized</code>, <code>ConnectTimeout</code>), making remote debugging impossible without server logs.</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>Goal</strong>: Expose specific technical errors to the user (or admin) in the chat interface when critical failures occur.</li>
+<li><strong>Mechanism</strong>:<ol>
+<li>Catch exceptions in the fallback logic.</li>
+<li>Store the <code>last_error</code> message.</li>
+<li>Append the error details (e.g., "Technical Error: {details}") to the final user-facing failure message.</li>
+</ol>
+</li>
+</ul>
+<h3>Replication Prompt</h3>
+<blockquote>
+<p>"Modifiy the <code>get_response</code> method in <code>AIService</code> to improve error visibility.</p>
+<p><strong>Requirements:</strong>
+1.  When an API call fails (Gemini or DeepSeek), capture the specific Python exception message (e.g., <code>str(e)</code>).
+2.  If <em>all</em> fallback attempts fail, do NOT just return a generic 'Sorry' message.
+3.  Append the captured error details to the end of the response: <code>\n\nTechnical Error: &lt;actual_error_message&gt;</code>.
+4.  This allows me to diagnose deployment issues (like Auth failures) directly from the client UI."</p>
+</blockquote>
+<hr />
+<h2>3. Digital Midwife Core (Persona &amp; Care Plans)</h2>
+<h3>Context</h3>
+<p>The core of Janani is relevant, medically accurate advice delivered in a "Village Sister" (Apu) persona. It generates weekly care plans and assesses risk based on user profile data.</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>Core Logic</strong>: <code>MaternalRiskProfile</code> model tracks weeks, vitals, and conditions.</li>
+<li><strong>Algorithms</strong>:<ul>
+<li><strong>Risk Calculation</strong>: Deterministic logic (Age &lt; 18, BMI &gt; 30, BP &gt; 140/90) -&gt; <code>RiskLevel</code>.</li>
+<li><strong>Care Plan</strong>: Week-by-week guide based on WHO ANC guidelines.</li>
+<li><strong>Persona</strong>: AI Instructions to speak in "Cholitobhasha" (Standard Colloquial) Bengali, avoiding "Sadhu" (Formal) language.</li>
+</ul>
+</li>
+</ul>
+<h3>Replication Prompt</h3>
+<blockquote>
+<p>"Build a FastAPI router <code>midwife_router.py</code> to manage maternal health profiles and care plans.</p>
+<p><strong>Requirements:</strong>
+1.  <strong>Data Model</strong>: Create a <code>MaternalRiskProfile</code> Pydantic model with fields for LMP (Last Menstrual Period), Age, BMI, Blood Pressure, and Hemoglobin.
+2.  <strong>Risk Logic</strong>: Implement a deterministic function that calculates <code>RiskLevel</code> (Low, Moderate, High, Critical). E.g., If Age &lt; 18 OR BMI &gt; 30, Risk = Moderate. If BP &gt;= 140/90, Risk = High.
+3.  <strong>Weekly Care Plan</strong>: Create a service that generates valid WHO-based advice for a specific pregnancy week (1-42).
+4.  <strong>Persona Injection</strong>: Implement a <code>humanize_care_plan</code> endpoint that takes the dry clinical plan and uses an LLM (Gemini) to rewrite it as 'Janani Apu' - a warm, caring sister speaking colloquial Bengali."</p>
+</blockquote>
+<hr />
+<h2>4. Emergency Bridge &amp; AR Assistant</h2>
+<h3>Context</h3>
+<p>A critical feature for rural areas. It bridges the gap between symptom detection and hospital arrival, providing real-time AR guidance for offline support.</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>Emergency Bridge</strong>:<ul>
+<li><strong>Trigger</strong>: Voice detection of keywords ("Bleeding", "Pain") or Triage result.</li>
+<li><strong>Response</strong>: Immediate "Action Plan" (json) + Hospital Locator using <code>haversine</code> distance.</li>
+</ul>
+</li>
+<li><strong>AR Guidance</strong>:<ul>
+<li><strong>Data Structure</strong>: Returns JSON configs for MediaPipe (Overlay info, target angles for body positions).</li>
+<li><strong>Offline Support</strong>: Rules are served via <code>offline_rules.json</code> for when internet fails.</li>
+</ul>
+</li>
+</ul>
+<h3>Replication Prompt</h3>
+<blockquote>
+<p>"Create an <code>EmergencyBridgeService</code> that handles critical maternal emergencies.</p>
+<p><strong>Requirements:</strong>
+1.  <strong>Protocol Database</strong>: Hardcode emergency protocols for Hemorrhage, Eclampsia, and Labor. Each must have <code>immediate_steps</code> (Bengali) and <code>do_not</code> actions.
+2.  <strong>Location Service</strong>: Implement a function to find the nearest hospital from a JSON list (<code>hospitals.json</code>) using the User's Latitude/Longitude.
+3.  <strong>AR Logic</strong>: Create an endpoint <code>/emergency/guidance/{type}</code> that returns JSON configuration for a frontend MediaPipe AR overlay.
+    - Example Data: <code>{ type: 'position', target_angle: 30, instructions: ['Lie flat', 'Raise legs'] }</code>.
+4.  <strong>Voice Guidance</strong>: Generate a script for the AI to speak calmly, guiding the user through the first 3 steps while the ambulance is called."</p>
+</blockquote>
+<hr />
+<h2>5. Food Intelligence (Vision &amp; RAG)</h2>
+<h3>Context</h3>
+<p>Analyzes food images or text to determine safety during pregnancy, specifically checking for culturally relevant restrictions (e.g., Raw Papaya).</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>Pipeline</strong>:<ol>
+<li><strong>Vision</strong>: Analyze image content (Ingredients, Nutrition).</li>
+<li><strong>RAG (Retrieval Augmented Generation)</strong>: Look up the detected food in a vector/rules database for specific pregnancy warnings.</li>
+<li><strong>Visual Menu</strong>: Generate a meal plan with <em>images</em> (using Pollinations.ai or similar) to make it visually appealing.</li>
+</ol>
+</li>
+</ul>
+<h3>Replication Prompt</h3>
+<blockquote>
+<p>"Build a <code>FoodAnalysisRouter</code> with two main capabilities:</p>
+<p><strong>1. Safety Analysis (RAG):</strong>
+- Input: Food Name or Image.
+- Process: Retrieve pregnancy safety data. Check for specific Bengali cultural restrictions (e.g., Pineapple, Raw Papaya).
+- Output: Safety Verdict (Safe/Unsafe/Caution) + Bengali Explanation.</p>
+<p><strong>2. Visual Menu Generator:</strong>
+- Input: User Budget (BDT) + Trimester.
+- Process: Use an LLM to generate a 5-item daily menu.
+- <strong>Critical</strong>: For each item, generate a valid Image URL (e.g., using Pollinations.ai with a specific prompt) so the user sees a photo of the food, not just text."</p>
+</blockquote>
+<hr />
+<h2>6. Voice &amp; Speech System (Polyglot)</h2>
+<h3>Context</h3>
+<p>Essential for illiterate users. The system must speak Bengali fluently and understand mixed "Banglish" or dialect speech.</p>
+<h3>Analysis</h3>
+<ul>
+<li><strong>Input (STT)</strong>: Uses <code>SpeechRecognition</code> library (Google wrapper) for generic Bengali support.</li>
+<li><strong>Output (TTS)</strong>:<ul>
+<li><strong>Tier 1</strong>: ElevenLabs (High quality, expensive). Use if Key exists.</li>
+<li><strong>Tier 2</strong>: gTTS (Google TTS, Free, Robotic). Fallback if Tier 1 fails/quota empty.</li>
+</ul>
+</li>
+</ul>
+<h3>Replication Prompt</h3>
+<blockquote>
+<p>"Implement a robust <code>SpeechService</code> logic for a Bengali voice bot.</p>
+<p><strong>Requirements:</strong>
+1.  <strong>Dual-Engine TTS</strong>:
+    - Primary: Check for an <code>ELEVENLABS_API_KEY</code>. If present, use ElevenLabs API for high-quality voice.
+    - Fallback: Wrap the call in a try/except. If it fails (Auth/Quota), immediately fall back to <code>gTTS</code> (Google Text-to-Speech) so the app never stays silent.
+2.  <strong>Audio Conversion</strong>: Use <code>ffmpeg</code> (via <code>pydub</code>) to convert any incoming user audio (blob/webm) to WAV before processing, as browsers send various formats.
+3.  <strong>Response</strong>: The API should return an audio file stream (bytes) directly to the frontend."</p>
+</blockquote></body></html>

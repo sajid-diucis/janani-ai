@@ -30,13 +30,22 @@ class AIService:
 
         # Initialize Gemini (OpenAI Compatible)
         if settings.gemini_api_key and len(settings.gemini_api_key) > 5:
-            # Detect if using custom proxy (like OneBrain) or official Google
+            # 1. Detect Config Mismatch (Smart Fix)
             base_url = settings.gemini_base_url
+            model_id = settings.gemini_model_id
+            
+            # If standard Google Key (AIza...) is detected but URL is OneBrain, switch to Official Google
+            if settings.gemini_api_key.startswith("AIza"):
+                print("⚡ Detected Standard Google Key. Switching to Official Google API endpoint.")
+                base_url = None # Let OpenAI client use default or just don't set base_url for standard? 
+                # Actually, AsyncOpenAI needs a base_url for Gemini compatibility usually:
+                base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
+                model_id = "gemini-1.5-flash" # Use standard ID
             
             self.gemini_client = AsyncOpenAI(
                 api_key=settings.gemini_api_key,
                 base_url=base_url,
-                timeout=120.0 # Increased timeout for custom proxies/complex models
+                timeout=120.0
             )
             
         self.guidelines_text = self._load_guidelines()
@@ -92,6 +101,9 @@ class AIService:
                 kwargs["response_format"] = {"type": "json_object"}
             return await client.chat.completions.create(**kwargs)
 
+        
+        last_error = None
+
         # 2. Try Gemini First
         if use_gemini and self.gemini_client:
             try:
@@ -108,6 +120,7 @@ class AIService:
                 return content
             except Exception as e:
                 print(f"⚠️ Gemini API Failed: {e}")
+                last_error = str(e)  # Capture error
                 print("🔄 Switching to DeepSeek API (Fallback)...")
                 # Fallthrough to DeepSeek logic below
         
@@ -119,7 +132,9 @@ class AIService:
             except Exception as e:
                 return f"দুঃখিত, কোনো AI সেবা এই মুহূর্তে কাজ করছে না। (Error: {str(e)})"
         
-        return "দুঃখিত, AI সেবা কনফিগার করা হয়নি।"
+        # If we reached here, both failed (or DeepSeek wasn't configured)
+        error_suffix = f"\n\nTechnical Error: {last_error}" if last_error else ""
+        return f"দুঃখিত, AI সেবা কনফিগার করা হয়নি বা কাজ করছে না।{error_suffix}"
 
     def _build_system_prompt(self, is_emergency: bool, user_context: Optional[Dict] = None) -> str:
         """Build Janani AI 'Village Sister' System Prompt"""

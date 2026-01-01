@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     deepseek_base_url: str = "https://api.deepseek.com/v1"
     groq_api_key: Optional[str] = None
     gemini_api_key: Optional[str] = Field(default=None, env="GEMINI_API_KEY")
-    gemini_base_url: str = "https://dev.onebrain.app/onebrain-api/v1"
+    gemini_base_url: str = Field(default="https://dev.onebrain.app/onebrain-api/v1", env="GEMINI_BASE_URL")
     gemini_model_id: str = "google/gemini-2.5-flash"
 
     # Hugging Face Configuration

@@ -1,0 +1,397 @@
+{
+  "user_123": {
+    "user_id": "user_123",
+    "name": "???",
+    "name_english": "Rahima",
+    "age": 29,
+    "weeks_pregnant": 40,
+    "trimester": "third",
+    "location": "????",
+    "blood_group": "O+",
+    "risks": [
+      "previous_anemia",
+      "low_blood_pressure_history"
+    ],
+    "conditions": [
+      "mild_anemia"
+    ],
+    "medical_history": [
+      "Week 20: Mild Anemia detected (Hemoglobin 10.2)",
+      "Week 28: History of low blood pressure episodes",
+      "Week 32: Complained of occasional dizziness"
+    ],
+    "last_symptoms": [
+      "ঝাপসা দেখা",
+      "মাথা ব্যথা"
+    ],
+    "recent_concerns": [
+      "ঝাপসা দেখছি আজকে সকাল থেকে",
+      "মাথা ব্যথা করছে"
+    ],
+    "blood_pressure": "140/95",
+    "hemoglobin": 10.8,
+    "last_checkup": "2026-01-05",
+    "last_meal": "ভাত আর আলু ভর্তা",
+    "emergency_contact": "স্বামী - করিম (01712345678)",
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "proof_test_user": {
+    "user_id": "proof_test_user",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "test_agentic": {
+    "user_id": "test_agentic",
+    "name": "রাহিমা",
+    "weeks_pregnant": 32,
+    "trimester": "third",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "test_profile_user": {
+    "user_id": "test_profile_user",
+    "name": "New Name",
+    "weeks_pregnant": 30,
+    "trimester": "third",
+    "age": 30,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "69935b11-578a-4565-8c88-416a6af31827": {
+    "user_id": "69935b11-578a-4565-8c88-416a6af31827",
+    "name": "ফাতেমা বেগম বয়স",
+    "weeks_pregnant": 32,
+    "trimester": "third",
+    "age": 26,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "e0853262-1d7f-44cf-bbca-800af7c73133": {
+    "user_id": "e0853262-1d7f-44cf-bbca-800af7c73133",
+    "name": "Unknown",
+    "weeks_pregnant": 28,
+    "trimester": "third",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "test": {
+    "user_id": "test",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "unified_test_user": {
+    "user_id": "unified_test_user",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "test_user": {
+    "user_id": "test_user",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "01602387483": {
+    "user_id": "01602387483",
+    "name": "Unknown",
+    "weeks_pregnant": 25,
+    "trimester": "second",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "test_debug": {
+    "user_id": "test_debug",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "guest": {
+    "user_id": "guest",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "c0db2b17-fb88-4201-bbd8-b969bfec11af": {
+    "user_id": "c0db2b17-fb88-4201-bbd8-b969bfec11af",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "7043a3eb-d32a-47ec-b2c7-cdd10a91072d": {
+    "user_id": "7043a3eb-d32a-47ec-b2c7-cdd10a91072d",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "5b9c2e92-384c-42f3-bc99-d425c476ebd5": {
+    "user_id": "5b9c2e92-384c-42f3-bc99-d425c476ebd5",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "9f494dd1-a035-409c-b0d0-4e97e6f2e3c2": {
+    "user_id": "9f494dd1-a035-409c-b0d0-4e97e6f2e3c2",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  },
+  "web_user": {
+    "user_id": "web_user",
+    "name": "Unknown",
+    "weeks_pregnant": 0,
+    "trimester": "unknown",
+    "age": 0,
+    "risks": [],
+    "conditions": [],
+    "last_symptoms": [],
+    "recent_concerns": [],
+    "blood_pressure": null,
+    "hemoglobin": null,
+    "last_checkup": null,
+    "emergency_sessions": [],
+    "care_plan_history": [],
+    "food_preferences": {
+      "dietary_restrictions": [],
+      "budget": 500,
+      "last_menu_generated": null
+    },
+    "uploaded_documents": []
+  }
+}

@@ -1,0 +1,49 @@
+services:
+  # 1. Main Janani App
+  - type: web
+    name: janani-main
+    runtime: python
+    rootDir: janani/fastapi-app
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DISPATCH_SERVICE_URL
+        fromService:
+          type: web
+          name: janani-dispatch
+          property: url
+      - key: MEDIMAIL_SERVICE_URL
+        fromService:
+          type: web
+          name: janani-medimail
+          property: url
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: DEEPSEEK_API_KEY
+        sync: false
+
+  # 2. Emergency Dispatch (Phone)
+  - type: web
+    name: janani-dispatch
+    runtime: python
+    rootDir: janani/phone-call-app
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+
+  # 3. MediMail Dashboard
+  - type: web
+    name: janani-medimail
+    runtime: python
+    rootDir: janani/email-dashboard-app
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: JANANI_SERVICE_URL
+        fromService:
+          type: web
+          name: janani-main
+          property: url

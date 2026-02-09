@@ -1,0 +1,3 @@
+Gemini Client: True
+DeepSeek Client: True
+Gemini Key: sk-di...

@@ -1,0 +1,2 @@
+Gemini Failed: 'coroutine' object has no attribute 'choices'
+DeepSeek Failed: 'coroutine' object has no attribute 'choices'

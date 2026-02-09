@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pollinations Test</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .image-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-top: 10px;
+            min-height: 200px;
+            background: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Pollinations.ai URL Test</h1>
+
+    <div class="image-container">
+        <h3>1. Current Implementation (Flux + NoLogo)</h3>
+        <p>URL:
+            https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen?width=800&height=600&model=flux&nologo=true
+        </p>
+        <img src="https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen?width=800&height=600&model=flux&nologo=true"
+            alt="Test 1">
+    </div>
+
+    <div class="image-container">
+        <h3>2. Default Model (No params)</h3>
+        <p>URL: https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen</p>
+        <img src="https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen" alt="Test 2">
+    </div>
+
+    <div class="image-container">
+        <h3>3. Turbo Model</h3>
+        <p>URL: https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen?model=turbo</p>
+        <img src="https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen?model=turbo" alt="Test 3">
+    </div>
+
+    <div class="image-container">
+        <h3>4. Flux Realism</h3>
+        <p>URL: https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen?model=flux-realism&nologo=true</p>
+        <img src="https://image.pollinations.ai/prompt/Bowl%20of%20delicious%20ramen?model=flux-realism&nologo=true"
+            alt="Test 3">
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,411 @@
+{
+    "metadata": {
+        "title": "WHO Recommendations on Antenatal Care for a Positive Pregnancy Experience",
+        "version": "Full_3.0",
+        "source": "World Health Organization (WHO) & UNICEF",
+        "last_updated": "2025-01-01"
+    },
+    "emergency_contacts": {
+        "ambulance": "999",
+        "health_line": "16263"
+    },
+    "rules": [
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.1",
+            "keywords": [
+                "bleeding",
+                "rokto",
+                "blood",
+                "spotting",
+                "vaginal bleeding",
+                "রক্তপাত",
+                "রক্ত"
+            ],
+            "response_bengali": "বিপদ সংকেত! গর্ভাবস্থায় যেকোনো পর্যায়ে রক্তপাত স্বাভাবিক নয়। এটি গর্ভপাত, অমরা (placenta) নিচে থাকা বা আলাদা হয়ে যাওয়ার লক্ষণ হতে পারে। ব্যথা না থাকলেও অবিলম্বে হাসপাতালে যান।",
+            "risk_level": "critical",
+            "action": "EMERGENCY_SCREEN"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.2",
+            "keywords": [
+                "convulsion",
+                "fit",
+                "khichuni",
+                "seizure",
+                "খিঁচুনি",
+                "হাত পা কাঁপা"
+            ],
+            "response_bengali": "অত্যন্ত জরুরি! খিঁচুনি একলাম্পসিয়ার (Eclampsia) লক্ষণ। এটি মা ও শিশু উভয়ের জন্যই প্রাণঘাতী হতে পারে। রোগীকে কোনোভাবেই একা রাখবেন না। মুখে চামচ বা কিছু দেবেন না। অন্ধকারে রাখুন এবং দ্রুত হাসপাতালে নিন।",
+            "risk_level": "critical",
+            "action": "EMERGENCY_SCREEN"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.3",
+            "keywords": [
+                "headache",
+                "severe headache",
+                "matha betha",
+                "matha",
+                "তীব্র মাথা ব্যথা"
+            ],
+            "response_bengali": "তীব্র মাথা ব্যথা যদি বিশ্রামে না কমে এবং সাথে চোখে ঝাপসা দেখা বা বমি ভাব থাকে, তবে এটি উচ্চ রক্তচাপের (High BP) লক্ষণ হতে পারে। দ্রুত রক্তচাপ (Blood Pressure) মাপুন এবং ডাক্তারের পরামর্শ নিন।",
+            "risk_level": "high"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "Pre-eclampsia Watch",
+            "keywords": [
+                "bp",
+                "pressure",
+                "high pressure",
+                "blood pressure",
+                "roktochap",
+                "রক্তচাপ",
+                "প্রেসার"
+            ],
+            "response_bengali": "গর্ভাবস্থায় উচ্চ রক্তচাপ (High BP) খুবই ঝুঁকিপূর্ণ। যদি মাথা ব্যথা, চোখে ঝাপসা দেখা বা শরীর ফোলার মতো সমস্যা থাকে, তবে অবিলম্বে ডাক্তার দেখান। নিয়মিত রক্তচাপ মাপা জরুরি।",
+            "risk_level": "high",
+            "action": "BP_CHECK"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.4",
+            "keywords": [
+                "vision",
+                "blurred vision",
+                "jhapsha",
+                "chokhe",
+                "চোখে ঝাপসা",
+                "সর্ষে ফুল"
+            ],
+            "response_bengali": "চোখে ঝাপসা দেখা বা আলোর ঝলকানি দেখা উচ্চ রক্তচাপের গুরুতর লক্ষণ। দেরি না করে হাসপাতালে যোগাযোগ করুন।",
+            "risk_level": "high"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.5",
+            "keywords": [
+                "fever",
+                "high fever",
+                "jor",
+                "temperature",
+                "জ্বর",
+                "শরীর গরম"
+            ],
+            "response_bengali": "উচ্চ জ্বর (১০০.৪°F বা ৩৮°C এর বেশি) গর্ভস্থ শিশুর জন্য ক্ষতিকর হতে পারে। এটি ইনফেকশন, ম্যালেরিয়া বা ডেঙ্গুর লক্ষণ হতে পারে। প্যারাসিটামল খান এবং ৩ দিনের বেশি থাকলে রক্ত পরীক্ষা করান।",
+            "risk_level": "high"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.6",
+            "keywords": [
+                "water break",
+                "leaking",
+                "pani bhanga",
+                "fluid",
+                "পানি ভাঙা"
+            ],
+            "response_bengali": "প্রসব ব্যথা শুরুর আগেই পানি ভাঙলে ইনফেকশনের ঝুঁকি বাড়ে। এটি 'PROM' হতে পারে। পানি ভাঙার ২৪ ঘণ্টার মধ্যে অ্যান্টিবায়োটিক বা প্রসবের ব্যবস্থা নিতে হবে। হাসপাতালে যান।",
+            "risk_level": "high",
+            "action": "EMERGENCY_SCREEN"
+        },
+        {
+            "category": "emergency_danger_signs",
+            "reference": "WHO ANC C.7",
+            "keywords": [
+                "movement",
+                "baby move",
+                "norachora",
+                "noren na",
+                "নড়াচড়া",
+                "নড়ে না"
+            ],
+            "response_bengali": "গর্ভাবস্থার ২৮ সপ্তাহের পর থেকে শিশুর নড়াচড়া খেয়াল রাখুন। ১২ ঘণ্টায় ১০ বারের কম নড়লে দ্রুত কিছু মিষ্টি/জুস খেয়ে বাম কাত হয়ে শুয়ে ১ ঘণ্টা লক্ষ্য করুন। তাও না নড়লে হাসপাতালে যান।",
+            "risk_level": "high"
+        },
+        {
+            "category": "nutrition_supplements",
+            "reference": "WHO ANC A.1",
+            "keywords": [
+                "iron",
+                "folic acid",
+                "ifa",
+                "tablet",
+                "ayron",
+                "tablet",
+                "আয়রন",
+                "ফলিক"
+            ],
+            "response_bengali": "গর্ভাবস্থায় প্রতিদিন আয়রন এবং ফলিক এসিড ট্যাবলেট খাওয়া উচিত। এটি রক্তশূন্যতা রোধ করে এবং বাচ্চার জন্য ভালো। লেবু বা টক ফলের সাথে খেলে আয়রন ভালো কাজ করে।",
+            "risk_level": "none"
+        },
+        {
+            "category": "nutrition_supplements",
+            "reference": "WHO ANC A.2",
+            "keywords": [
+                "calcium",
+                "calsiam",
+                "kalsiam",
+                "ক্যালসিয়াম"
+            ],
+            "response_bengali": "গর্ভাবস্থার ২০ সপ্তাহ থেকে প্রতিদিন ১.৫-২ গ্রাম ক্যালসিয়াম খাওয়া উচিত। এটি উচ্চ রক্তচাপ (Pre-eclampsia) প্রতিরোধে সাহায্য করে। তবে আয়রন এবং ক্যালসিয়াম ট্যাবলেট একসাথে খাবেন না, অন্তত ২ ঘণ্টার ব্যবধান রাখুন।",
+            "risk_level": "none"
+        },
+        {
+            "category": "nutrition_diet",
+            "reference": "WHO ANC A.3",
+            "keywords": [
+                "diet",
+                "khabar",
+                "nutrition",
+                "food",
+                "what to eat",
+                "খাবার",
+                "পুষ্টি"
+            ],
+            "response_bengali": "গর্ভবতী মায়ের প্রতিদিন স্বাভাবিকের চেয়ে এক মুঠো বেশি খাবার (অতিরিক্ত ৩৫০-৪৫০ ক্যালোরি) প্রয়োজন। প্রোটিন (ডিম, ডাল), ক্যালসিয়াম (দুধ), এবং ভিটামিন (শাকসবজি, ফল) খাদ্যের তালিকায় রাখুন।",
+            "risk_level": "none"
+        },
+        {
+            "category": "nutrition_diet",
+            "reference": "WHO ANC A.4",
+            "keywords": [
+                "caffeine",
+                "tea",
+                "coffee",
+                "cha",
+                "kofi",
+                "চা",
+                "কফি"
+            ],
+            "response_bengali": "দৈনিক ৩০০ মিলিগ্রামের বেশি ক্যাফেইন (২-৩ কাপের বেশি কফি/চা) এড়িয়ে চলুন। অতিরিক্ত চা/কফি আয়রন শোষণ কমিয়ে দেয় এবং শিশুর ওজন কম হতে পারে।",
+            "risk_level": "low"
+        },
+        {
+            "category": "common_symptoms",
+            "reference": "WHO ANC E.1",
+            "keywords": [
+                "nausea",
+                "vomiting",
+                "morning sickness",
+                "bomi",
+                "বমি"
+            ],
+            "response_bengali": "গর্ভাবস্থার প্রথম ৩ মাস বমি ভাব স্বাভাবিক। সকালে বিস্কুট বা মুড়ি খান। একবারে পেট ভরে না খেয়ে অল্প অল্প করে বারে বারে খান। আদা চা বমি ভাব কমাতে সাহায্য করে।",
+            "risk_level": "low"
+        },
+        {
+            "category": "common_symptoms",
+            "reference": "WHO ANC E.2",
+            "keywords": [
+                "heartburn",
+                "acid",
+                "gas",
+                "buk jala",
+                "গ্যাস",
+                "বুক জ্বালাপোড়া"
+            ],
+            "response_bengali": "বুক জ্বালাপোড়া কমাতে তেল-চর্বি ও মশলাযুক্ত খাবার পরিহার করুন। খাওয়ার পরপরই শুয়ে পড়বেন না। শোয়ার সময় মাথা ও পিঠ উঁচুতে রাখুন।",
+            "risk_level": "low"
+        },
+        {
+            "category": "common_symptoms",
+            "reference": "WHO ANC E.3",
+            "keywords": [
+                "leg cramp",
+                "muscle pain",
+                "pa betha",
+                "pa",
+                "পা কামড়ানো",
+                "খিঁচ ধরা"
+            ],
+            "response_bengali": "পায়ে টান ধরা বা কামড়ানো ম্যাগনেসিয়াম বা ক্যালসিয়ামের অভাবে হতে পারে। পা ম্যাসাজ করুন এবং ক্যালসিয়াম সমৃদ্ধ খাবার খান। ঘুমানোর সময় পা সোজা করে প্রসারিত করুন।",
+            "risk_level": "low"
+        },
+        {
+            "category": "common_symptoms",
+            "reference": "WHO ANC E.4",
+            "keywords": [
+                "back pain",
+                "pith betha",
+                "komor",
+                "কোমর ব্যথা",
+                "পিঠ"
+            ],
+            "response_bengali": "পেটের ভার বাড়ার সাথে পিঠে ব্যথা স্বাভাবিক। সোজা হয়ে বসার চেষ্টা করুন। ভারী কাজ বা নিচু হয়ে কিছু তোলা এড়িয়ে চলুন। হালকা গরম সেঁক আরাম দিতে পারে।",
+            "risk_level": "low"
+        },
+        {
+            "category": "common_symptoms",
+            "reference": "WHO ANC E.5",
+            "keywords": [
+                "constipation",
+                "kosh",
+                " পায়খানা",
+                "koshkathinno"
+            ],
+            "response_bengali": "কোষ্ঠকাঠিন্য কমাতে প্রচুর পানি এবং ফাইবারযুক্ত খাবার (শাকসবজি, ফল, ইসবগুল) খান। আয়রন ট্যাবলেটের কারণে এটি বাড়তে পারে, তবে ওষুধ বন্ধ করবেন না।",
+            "risk_level": "low"
+        },
+        {
+            "category": "common_symptoms",
+            "reference": "WHO ANC E.6",
+            "keywords": [
+                "varicose veins",
+                "swollen leg",
+                "rog fula",
+                "শিরা ফোলা"
+            ],
+            "response_bengali": "পায়ে শিরা ফুলে গেলে বেশিক্ষণ দাঁড়িয়ে থাকবেন না। বসার সময় পা উঁচুতে (টুল বা বালিশের ওপর) রাখুন। কমপ্রেশন স্টকিং ব্যবহার করা যেতে পারে।",
+            "risk_level": "low"
+        },
+        {
+            "category": "anc_checkups",
+            "reference": "WHO ANC B.1",
+            "keywords": [
+                "checkup",
+                "visit",
+                "daktar",
+                "kobe jabo",
+                "check",
+                "চেকআপ",
+                "ডাক্তার"
+            ],
+            "response_bengali": "গর্ভকালে অন্তত ৮ বার চেকআপ বা 'Contact' করা ভালো। তবে যদি সম্ভব না হয়, অন্তত ৪ বার অবশ্যই ডাক্তার দেখান। প্রথম চেকআপ ১২ সপ্তাহের মধ্যেই করা জরুরি।",
+            "risk_level": "none"
+        },
+        {
+            "category": "anc_checkups",
+            "reference": "WHO ANC B.2",
+            "keywords": [
+                "ultrasound",
+                "usg",
+                "altrasono",
+                "scan",
+                "আল্ট্রাসনোগ্রাম"
+            ],
+            "response_bengali": "২৪ সপ্তাহের আগে অন্তত একটি আল্ট্রাসাউন্ড করা উচিত (Early Ultrasound)। এটি শিশুর সঠিক বয়স নির্ধারণ এবং কোনো বড় জন্মগত ত্রুটি আছে কিনা তা দেখতে সাহায্য করে।",
+            "risk_level": "none"
+        },
+        {
+            "category": "anc_checkups",
+            "reference": "WHO ANC B.3",
+            "keywords": [
+                "tt",
+                "tetanus",
+                "vaccine",
+                "tika",
+                "টিকা"
+            ],
+            "response_bengali": "টিটেনাস (Tetanus) টিকার দুটি ডোজ নিতে হবে। প্রথমটি গর্ভধারণের পরপরই এবং দ্বিতীয়টি এক মাস পর। এটি মা ও নবজাতক উভয়কেই ধনুষ্টঙ্কার থেকে রক্ষা করে।",
+            "risk_level": "none"
+        },
+        {
+            "category": "preventive_measures",
+            "reference": "WHO ANC D.1",
+            "keywords": [
+                "worms",
+                "krimi",
+                "albendazole",
+                "কৃমি"
+            ],
+            "response_bengali": "দ্বিতীয় ত্রৈমাসিকের (১৪ সপ্তাহের) পর কৃমির ওষুধ (অ্যালবেন্ডাজল ৪০০ মিগ্রা) একক ডোজ খাওয়া উচিত, বিশেষ করে যেখানে কৃমির প্রাদুর্ভাব বেশি। এটি রক্তশূন্যতা রোধে সাহায্য করে।",
+            "risk_level": "none"
+        },
+        {
+            "category": "lifestyle",
+            "reference": "WHO ANC F.1",
+            "keywords": [
+                "exercise",
+                "beyam",
+                "hatahati",
+                "khosto",
+                "ব্যায়াম",
+                "হাঁটা"
+            ],
+            "response_bengali": "গর্ভাবস্থায় হালকা থেকে মাঝারি ব্যায়াম (যেমন ৩০ মিনিট হাঁটা) উপকারী। তবে পিঠে ভর দিয়ে ব্যায়াম, ভারী ওজন তোলা বা আঘাত লাগার মতো খেলাধুলা এড়িয়ে চলুন।",
+            "risk_level": "none"
+        },
+        {
+            "category": "lifestyle",
+            "reference": "WHO ANC F.2",
+            "keywords": [
+                "smoking",
+                "tobacco",
+                "dhumpan",
+                "bidi",
+                "ধূমপান",
+                "তামাক"
+            ],
+            "response_bengali": "ধূমপান বা তামাক সেবন (জর্দা, সাদা পাতা) শিশুর ওজন কম হওয়া এবং সময়ের আগে জন্মের ঝুঁকি বাড়ায়। পরোক্ষ ধূমপান (অন্যের ধোঁয়া) থেকেও দূরে থাকুন।",
+            "risk_level": "high"
+        },
+        {
+            "category": "birth_preparedness",
+            "reference": "WHO ANC G.1",
+            "keywords": [
+                "plan",
+                "prostuti",
+                "birth plan",
+                "bag",
+                "প্রস্তুতি",
+                "ব্যাগ"
+            ],
+            "response_bengali": "জন্মের প্রস্তুতি আগে থেকেই নিন: ১. প্রসবের স্থান ঠিক করুন (হাসপাতাল না বাড়ি?), ২. যাতায়াতের ব্যবস্থা ও খরচ সঞ্চয় করুন, ৩. জরুরি প্রয়োজনে রক্তদাতাদের নম্বর সংগ্রহে রাখুন, ৪. মা ও শিশুর প্রয়োজনীয় জিনিসপত্র গুছিয়ে রাখুন।",
+            "risk_level": "none"
+        },
+        {
+            "category": "postpartum_care",
+            "reference": "WHO PNC 1",
+            "keywords": [
+                "bleeding after birth",
+                "postpartum hemorrhage",
+                "pph",
+                "প্রসবের পর রক্তপাত"
+            ],
+            "response_bengali": "প্রসবের পর অতিরিক্ত রক্তপাত (প্যাড ১ ঘণ্টায় ভিজে যাওয়া) স্বাভাবিক নয়। এটি PPH। অবিলম্বে জরায়ু ম্যাসাজ করুন এবং হাসপাতালে নিন।",
+            "risk_level": "critical",
+            "action": "EMERGENCY_SCREEN"
+        },
+        {
+            "category": "newborn_care",
+            "reference": "WHO PNC 2",
+            "keywords": [
+                "breastfeeding",
+                "dudh",
+                "shal dudh",
+                "বুকের দুধ",
+                "শালদুধ"
+            ],
+            "response_bengali": "জন্মের ১ ঘণ্টার মধ্যে শিশুকে শালদুধ দিন। এটি শিশুর প্রথম এবং সবচেয়ে শক্তিশালী টিকা। ৬ মাস পর্যন্ত শিশুকে শুধুমাত্র বুকের দুধ দিন, পানি বা মধু কিছুই দেবেন না।",
+            "risk_level": "none"
+        },
+        {
+            "category": "newborn_care",
+            "reference": "WHO PNC 3",
+            "keywords": [
+                "bath",
+                "gosol",
+                "shishu gosol",
+                "গোসল"
+            ],
+            "response_bengali": "নবজাতককে জন্মের ৩ দিন (৭২ ঘণ্টা) পর গোসল করানো উচিত। এর আগে গোসল করালে শিশুর ঠান্ডা লেগে নিউমোনিয়া হতে পারে। শরীর মুছিয়ে পরিষ্কার রাখুন।",
+            "risk_level": "medium"
+        },
+        {
+            "category": "newborn_care",
+            "reference": "WHO PNC 4",
+            "keywords": [
+                "cord",
+                "nabhi",
+                "umbilical",
+                "নাভি"
+            ],
+            "response_bengali": "শিশুর নাভি শুকনো ও পরিষ্কার রাখুন। নাভিতে তেল, ছাই বা কিছুই লাগাবেন না। লাল হয়ে গেলে বা দুর্গন্ধ হলে ইনফেকশনের লক্ষণ—ডাক্তার দেখান। (ক্লোরহেক্সিডিন ব্যবহার করা যেতে পারে যদি ডাক্তার পরামর্শ দেন)।",
+            "risk_level": "medium"
+        }
+    ]
+}

@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🏥 AR Emergency Assistance - Janani AI</title>
+
+    <!-- PWA Support -->
+    <meta name="theme-color" content="#D32F2F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/static/manifest.json">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item.online {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+        }
+
+        .status-item.offline {
+            background: rgba(244, 67, 54, 0.2);
+            color: #F44336;
+        }
+
+        .status-item.processing {
+            background: rgba(33, 150, 243, 0.2);
+            color: #2196F3;
+        }
+
+        /* Main Container */
+        .ar-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Video Feed */
+        #ar-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+            /* Mirror for selfie view */
+        }
+
+        /* AR Canvas Overlay */
+        #ar-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            transform: scaleX(-1);
+        }
+
+        /* Instructions Panel */
+        .instructions-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.7));
+            padding: 20px;
+            max-height: 40vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .live-coach-panel {
+            position: fixed;
+            top: 130px;
+            right: 15px;
+            width: 280px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 12px;
+            z-index: 120;
+            backdrop-filter: blur(6px);
+        }
+
+        .live-coach-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .live-coach-toggle {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border: none;
+            color: white;
+            border-radius: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .live-coach-toggle.off {
+            background: linear-gradient(135deg, #9E9E9E, #616161);
+        }
+
+        .live-coach-status {
+            font-size: 11px;
+            color: #BDBDBD;
+            margin-bottom: 8px;
+        }
+
+        .live-coach-section {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 8px;
+        }
+
+        .live-coach-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #BDBDBD;
+            margin-bottom: 4px;
+        }
+
+        .live-coach-text {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #fff;
+            min-height: 28px;
+        }
+
+        .live-coach-pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            background: rgba(33, 150, 243, 0.2);
+            color: #90CAF9;
+            margin-left: 6px;
+        }
+
+        .instruction-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .instruction-header .icon {
+            font-size: 40px;
+        }
+
+        .instruction-header .title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .instruction-header .subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .instruction-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .instruction-step.critical {
+            border-left-color: #F44336;
+            background: rgba(244, 67, 54, 0.1);
+        }
+
+        .instruction-step.warning {
+            border-left-color: #FF9800;
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #E91E63, #9C27B0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-bn {
+            font-size: 15px;
+            margin-bottom: 3px;
+        }
+
+        .step-en {
+            font-size: 11px;
+            opacity: 0.6;
+        }
+
+        .speak-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Emergency Call Button */
+        .emergency-call {
+            position: fixed;
+            bottom: 45vh;
+            right: 20px;
+            z-index: 200;
+        }
+
+        .emergency-call a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F44336, #D32F2F);
+            color: white;
+            text-decoration: none;
+            font-size: 30px;
+            box-shadow: 0 5px 25px rgba(244, 67, 54, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 20px rgba(244, 67, 54, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(244, 67, 54, 0);
+            }
+        }
+
+        /* Timer Overlay */
+        .timer-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 300;
+            display: none;
+        }
+
+        .timer-display {
+            font-size: 80px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+        }
+
+        /* Metronome for CPR */
+        .metronome {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 250;
+            display: none;
+        }
+
+        .metronome-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(244, 67, 54, 0.3);
+            border: 4px solid #F44336;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .metronome-circle.beat {
+            animation: beat 0.5s ease;
+        }
+
+        @keyframes beat {
+            0% {
+                transform: scale(1);
+                background: rgba(244, 67, 54, 0.3);
+            }
+
+            50% {
+                transform: scale(1.2);
+                background: rgba(244, 67, 54, 0.8);
+            }
+
+            100% {
+                transform: scale(1);
+                background: rgba(244, 67, 54, 0.3);
+            }
+        }
+
+        /* AR Visual Guides */
+        .ar-guide-text {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 500;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #E91E63;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            position: fixed;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid #FFC107;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #FFC107;
+            z-index: 100;
+            text-align: center;
+            max-width: 90%;
+        }
+
+        .protocol-bar {
+            position: fixed;
+            top: 60px;
+            left: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+        }
+
+        .protocol-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .protocol-title .icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.08);
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+
+        .protocol-title .text {
+            min-width: 0;
+        }
+
+        .protocol-title .name {
+            font-weight: 800;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .protocol-title .subtitle {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .protocol-severity {
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(76, 175, 80, 0.12);
+            border: 1px solid rgba(76, 175, 80, 0.35);
+            color: #9CFFB0;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">🏥 AR system is loading...</p>
+        <p style="font-size: 12px; opacity: 0.6; margin-top: 10px;">Loading MediaPipe WASM...</p>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item" id="connectionStatus">
+            <span>📶</span>
+            <span id="connectionText">Online</span>
+        </div>
+        <div class="status-item" id="fpsStatus">
+            <span>⚡</span>
+            <span id="fpsText">-- FPS</span>
+        </div>
+        <div class="status-item" id="batteryStatus">
+            <span>🔋</span>
+            <span id="batteryText">--%</span>
+        </div>
+    </div>
+
+    <!-- Single Protocol Bar (AI selects scenario) -->
+    <div class="protocol-bar" id="protocolBar">
+        <div class="protocol-title">
+            <div class="icon" id="protocolIcon">🏥</div>
+            <div class="text">
+                <div class="name" id="protocolName">Emergency Protocol</div>
+                <div class="subtitle" id="protocolSubtitle">WHO first-aid steps</div>
+            </div>
+        </div>
+        <div class="protocol-severity" id="protocolSeverity">ACTIVE</div>
+    </div>
+
+    <!-- AI Input Modal -->
+    <div id="aiModal"
+        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; flex-direction: column;">
+        <div
+            style="background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center; border: 1px solid #333;">
+            <div style="font-size: 40px; margin-bottom: 20px;">🤖</div>
+            <h2 style="color: white; margin-bottom: 15px;">What is the emergency?</h2>
+            <p style="color: #ccc; font-size: 14px; margin-bottom: 20px;">Describe the situation by text</p>
+
+            <input type="text" id="aiInput" placeholder="Example: baby is breech..."
+                style="width: 100%; padding: 15px; border-radius: 10px; border: none; background: #333; color: white; margin-bottom: 20px; font-size: 16px;">
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closeAIModal()"
+                    style="padding: 10px 20px; border-radius: 10px; border: 1px solid #666; background: transparent; color: white; cursor: pointer;">Close</button>
+                <button onclick="submitAIQuery()"
+                    style="padding: 10px 20px; border-radius: 10px; border: none; background: linear-gradient(135deg, #2196F3, #21CBF3); color: white; font-weight: bold; cursor: pointer;">Get Guidance</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clinical Mode Modal (Doctor View) -->
+    <div id="clinicalModal"
+        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 2000; overflow-y: auto; padding: 20px;">
+        <div
+            style="max-width: 600px; margin: 0 auto; background: #1a1a1a; border-radius: 15px; border: 1px solid #333; overflow: hidden;">
+
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #0097A7, #006064); padding: 20px; text-align: center;">
+                <div style="font-size: 30px; margin-bottom: 5px;">👨‍⚕️</div>
+                <h2 style="color: white; margin: 0;">Clinical Insight Report</h2>
+                <p style="color: rgba(255,255,255,0.8); font-size: 12px;">Senior Clinical Strategist Analysis</p>
+            </div>
+
+            <div id="clinicalContent" style="padding: 20px;">
+                <!-- Loading State -->
+                <div style="text-align: center; padding: 40px;">
+                    <div class="loading-spinner" style="margin: 0 auto; border-top-color: #00BCD4;"></div>
+                    <p style="margin-top: 15px; color: #aaa;">Synthesizing Patient History & Vitals...</p>
+                </div>
+            </div>
+
+            <div style="padding: 15px; text-align: center; border-top: 1px solid #333;">
+                <button onclick="document.getElementById('clinicalModal').style.display='none'"
+                    style="padding: 10px 30px; border-radius: 20px; border: 1px solid #666; background: transparent; color: white; cursor: pointer;">
+                    Close Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+        ⚠️ This is an aid tool. Consult a licensed clinician.
+    </div>
+
+    <!-- AR Container -->
+    <div class="ar-container">
+        <video id="ar-video" autoplay playsinline></video>
+        <canvas id="ar-canvas"></canvas>
+
+        <!-- AR Status Badge -->
+        <div id="arStatusBadge" style="position: absolute; top: 80px; left: 50%; transform: translateX(-50%); 
+            padding: 8px 20px; border-radius: 20px; background: rgba(255, 193, 7, 0.9); color: #333;
+            font-size: 14px; font-weight: bold; z-index: 50; display: flex; align-items: center; gap: 8px;">
+            <span id="arStatusIcon">🔍</span>
+            <span id="arStatusText">Scanning...</span>
+        </div>
+
+        <!-- No Body Detected Warning -->
+        <div id="noBodyWarning" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(244, 67, 54, 0.95); color: white; padding: 30px 40px; border-radius: 20px;
+            text-align: center; z-index: 60; max-width: 80%;">
+            <div style="font-size: 50px; margin-bottom: 15px;">👤❌</div>
+            <h3 style="margin: 0 0 10px 0;">No person detected</h3>
+            <p style="margin: 0; font-size: 14px; opacity: 0.9;">Show your body to the camera (shoulders to waist)</p>
+        </div>
+
+        <!-- Position Guidance Overlay -->
+        <div id="positionGuidance" style="display: none; position: absolute; bottom: 45%; left: 50%; transform: translateX(-50%);
+            background: rgba(33, 150, 243, 0.95); color: white; padding: 15px 25px; border-radius: 15px;
+            text-align: center; z-index: 55; min-width: 200px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+            <div id="guidanceArrow" style="font-size: 40px; margin-bottom: 8px;">⬇️</div>
+            <p id="guidanceText" style="margin: 0; font-size: 16px; font-weight: bold;">Show abdomen</p>
+            <p id="guidanceSubtext" style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Lower the camera</p>
+        </div>
+    </div>
+
+    <div class="live-coach-panel" id="liveCoachPanel">
+        <div class="live-coach-header">
+            <span>🧠 Live Coach <span class="live-coach-pill" id="coachTone">neutral</span></span>
+            <button id="coachToggle" class="live-coach-toggle" onclick="toggleLiveCoach()">ON</button>
+        </div>
+        <div class="live-coach-status" id="coachStatus">Connecting...</div>
+        <div class="live-coach-section">
+            <div class="live-coach-label">AI Vision</div>
+            <div class="live-coach-text" id="coachVision">--</div>
+        </div>
+        <div class="live-coach-section">
+            <div class="live-coach-label">Coach Advice</div>
+            <div class="live-coach-text" id="coachAdvice">--</div>
+        </div>
+    </div>
+
+    <!-- Emergency Call Button -->
+    <div class="emergency-call">
+        <a href="tel:999" title="Call 999">📞</a>
+    </div>
+
+    <!-- Metronome for CPR -->
+    <div class="metronome" id="metronome">
+        <div class="metronome-circle" id="metronomeCircle">
+            <span id="metronomeCount">Press</span>
+        </div>
+    </div>
+
+    <!-- Timer Overlay -->
+    <div class="timer-overlay" id="timerOverlay">
+        <div class="timer-display" id="timerDisplay">30</div>
+        <p id="timerLabel" style="margin-top: 15px;">seconds left</p>
+        <button onclick="stopTimer()"
+            style="margin-top: 20px; padding: 12px 30px; border: none; border-radius: 25px; background: #F44336; color: white; cursor: pointer;">Stop</button>
+    </div>
+
+    <!-- Instructions Panel -->
+    <div class="instructions-panel" id="instructionsPanel">
+        <!-- Content loaded dynamically -->
+    </div>
+
+    <!-- MediaPipe & AR Scripts -->
+    <script type="module">
+        // ============ MediaPipe WASM Integration ============
+
+        // Try to load from local first, fallback to CDN
+        let PoseLandmarker, FilesetResolver, DrawingUtils;
+
+        async function loadMediaPipe() {
+            try {
+                // Try loading from CDN (more reliable for demo)
+                const vision = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm');
+                PoseLandmarker = vision.PoseLandmarker;
+                FilesetResolver = vision.FilesetResolver;
+                DrawingUtils = vision.DrawingUtils;
+                console.log('✅ MediaPipe loaded from CDN');
+                return true;
+            } catch (e) {
+                console.error('❌ Failed to load MediaPipe:', e);
+                return false;
+            }
+        }
+
+        // ============ Global State ============
+        let poseLandmarker = null;
+        let video = null;
+        let canvas = null;
+        let ctx = null;
+        let currentScenario = 'labor';
+        let isProcessing = false;
+        let lastFrameTime = 0;
+        let fps = 0;
+        let frameCount = 0;
+        let lastFpsUpdate = 0;
+
+        // Body Detection State
+        let bodyDetected = false;
+        let lastBodyDetectedTime = 0;
+        let noBodyWarningShown = false;
+        const NO_BODY_TIMEOUT_MS = 3000; // Show warning after 3 seconds of no detection
+
+        // Position Guidance Constants
+        const VISIBILITY_THRESHOLD = 0.5; // Minimum visibility score to consider landmark "visible"
+        const EDGE_MARGIN = 0.15; // 15% from edge is considered "too close to edge"
+
+        let coachSocket = null;
+        let liveCoachEnabled = true;
+        let coachLastSentAt = 0;
+        let coachLastWrist = null;
+        let coachLastNoHandAt = 0;
+        let coachLastNoHandPromptAt = 0;
+        let coachAudioChunks = [];
+        let coachAudioQueue = [];
+        let coachAudioContext = null;
+        let coachAudioPlaying = false;
+        let lastVoiceText = "";
+        let lastCoachAdviceText = "";
+        let lastCoachAdviceAt = 0;
+        let ignoreCoachAudio = false;
+
+        // Analyze body position and return guidance
+        function analyzeBodyPosition(landmarks) {
+            if (!landmarks || landmarks.length === 0) return null;
+
+            const guidance = [];
+
+            // Key landmarks
+            const nose = landmarks[0];
+            const leftShoulder = landmarks[11];
+            const rightShoulder = landmarks[12];
+            const leftHip = landmarks[23];
+            const rightHip = landmarks[24];
+
+            // 1. Check if hips/belly are visible (important for labor scenarios)
+            const hipsVisible = (leftHip && leftHip.visibility > VISIBILITY_THRESHOLD) ||
+                (rightHip && rightHip.visibility > VISIBILITY_THRESHOLD);
+
+            if (!hipsVisible) {
+                // Check if body is in frame at all (shoulders visible)
+                const shouldersVisible = (leftShoulder && leftShoulder.visibility > VISIBILITY_THRESHOLD) ||
+                    (rightShoulder && rightShoulder.visibility > VISIBILITY_THRESHOLD);
+                if (shouldersVisible) {
+                    guidance.push({
+                        arrow: '⬇️',
+                        text: 'Show abdomen',
+                        subtext: 'Lower the camera',
+                        priority: 2
+                    });
+                }
+            }
+
+            // 2. Check if shoulders are visible
+            const shouldersVisible = (leftShoulder && leftShoulder.visibility > VISIBILITY_THRESHOLD) ||
+                (rightShoulder && rightShoulder.visibility > VISIBILITY_THRESHOLD);
+            if (!shouldersVisible && hipsVisible) {
+                guidance.push({
+                    arrow: '⬆️',
+                    text: 'Show shoulders',
+                    subtext: 'Raise the camera',
+                    priority: 1
+                });
+            }
+
+            // 3. Check horizontal position (is person at edge of frame?)
+            if (nose && nose.visibility > VISIBILITY_THRESHOLD) {
+                if (nose.x < EDGE_MARGIN) {
+                    guidance.push({
+                        arrow: '➡️',
+                        text: 'Move right',
+                        subtext: 'or pan camera left',
+                        priority: 3
+                    });
+                } else if (nose.x > (1 - EDGE_MARGIN)) {
+                    guidance.push({
+                        arrow: '⬅️',
+                        text: 'Move left',
+                        subtext: 'or pan camera right',
+                        priority: 3
+                    });
+                }
+            }
+
+            // Return highest priority guidance
+            if (guidance.length === 0) return null;
+            guidance.sort((a, b) => a.priority - b.priority);
+            return guidance[0];
+        }
+
+        // Show/hide position guidance
+        function updatePositionGuidance(guidance) {
+            const el = document.getElementById('positionGuidance');
+            if (!guidance) {
+                el.style.display = 'none';
+                return;
+            }
+
+            document.getElementById('guidanceArrow').textContent = guidance.arrow;
+            document.getElementById('guidanceText').textContent = guidance.text;
+            document.getElementById('guidanceSubtext').textContent = guidance.subtext;
+            el.style.display = 'block';
+        }
+
+        function updateCoachStatus(text, color) {
+            const el = document.getElementById('coachStatus');
+            if (!el) return;
+            el.textContent = text;
+            if (color) el.style.color = color;
+        }
+
+        function updateCoachVision(text) {
+            const el = document.getElementById('coachVision');
+            if (!el) return;
+            el.textContent = text || '--';
+        }
+
+        function updateCoachAdvice(text) {
+            const el = document.getElementById('coachAdvice');
+            if (!el) return;
+            el.textContent = text || '--';
+        }
+
+        function updateCoachTone(tone) {
+            const el = document.getElementById('coachTone');
+            if (!el) return;
+            const t = tone || 'neutral';
+            el.textContent = t;
+            if (t === 'urgent') {
+                el.style.background = 'rgba(244, 67, 54, 0.2)';
+                el.style.color = '#EF9A9A';
+            } else if (t === 'calm') {
+                el.style.background = 'rgba(76, 175, 80, 0.2)';
+                el.style.color = '#A5D6A7';
+            } else {
+                el.style.background = 'rgba(33, 150, 243, 0.2)';
+                el.style.color = '#90CAF9';
+            }
+        }
+
+        window.toggleLiveCoach = function () {
+            liveCoachEnabled = !liveCoachEnabled;
+            const btn = document.getElementById('coachToggle');
+            if (liveCoachEnabled) {
+                btn.textContent = 'ON';
+                btn.classList.remove('off');
+                updateCoachStatus('Connecting...', '#BDBDBD');
+                connectLiveCoach();
+            } else {
+                btn.textContent = 'OFF';
+                btn.classList.add('off');
+                updateCoachStatus('Off', '#9E9E9E');
+                disconnectLiveCoach();
+            }
+        };
+
+        function connectLiveCoach() {
+            if (coachSocket && (coachSocket.readyState === WebSocket.OPEN || coachSocket.readyState === WebSocket.CONNECTING)) {
+                return;
+            }
+            const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+            const wsUrl = `${protocol}://${location.host}/ws/coaching/ar_${Date.now()}`;
+            coachSocket = new WebSocket(wsUrl);
+            coachSocket.binaryType = 'arraybuffer';
+            coachSocket.onopen = () => {
+                updateCoachStatus('Connected', '#4CAF50');
+                if (coachAudioContext && coachAudioContext.state === 'suspended') {
+                    coachAudioContext.resume();
+                }
+            };
+            coachSocket.onclose = () => {
+                if (liveCoachEnabled) updateCoachStatus('Disconnected', '#FF9800');
+            };
+            coachSocket.onerror = () => updateCoachStatus('Error', '#F44336');
+            coachSocket.onmessage = (event) => handleCoachMessage(event);
+        }
+
+        function disconnectLiveCoach() {
+            if (coachSocket) {
+                coachSocket.close();
+                coachSocket = null;
+            }
+        }
+
+        function handleCoachMessage(event) {
+            if (typeof event.data === 'string') {
+                if (event.data === 'END_AUDIO') {
+                    if (ignoreCoachAudio) {
+                        coachAudioChunks = [];
+                        ignoreCoachAudio = false;
+                        return;
+                    }
+                    finalizeCoachAudio();
+                    return;
+                }
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.type === 'debug') {
+                        updateCoachVision(data.visual_desc);
+                    }
+                    if (data.type === 'advice') {
+                        const text = (data.text || '').trim();
+                        const now = Date.now();
+                        if (text && text === lastCoachAdviceText && now - lastCoachAdviceAt < 15000) {
+                            ignoreCoachAudio = true;
+                            return;
+                        }
+                        lastCoachAdviceText = text;
+                        lastCoachAdviceAt = now;
+                        ignoreCoachAudio = false;
+                        updateCoachAdvice(text);
+                        updateCoachTone(data.tone);
+                    }
+                } catch (e) {
+                }
+                return;
+            }
+            if (event.data instanceof Blob) {
+                event.data.arrayBuffer().then(buffer => {
+                    if (!ignoreCoachAudio) coachAudioChunks.push(buffer);
+                });
+                return;
+            }
+            if (event.data instanceof ArrayBuffer) {
+                if (!ignoreCoachAudio) coachAudioChunks.push(event.data);
+            }
+        }
+
+        function ensureCoachAudioContext() {
+            if (!coachAudioContext) {
+                coachAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function finalizeCoachAudio() {
+            if (!coachAudioChunks.length) return;
+            const total = coachAudioChunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+            const merged = new Uint8Array(total);
+            let offset = 0;
+            coachAudioChunks.forEach(chunk => {
+                merged.set(new Uint8Array(chunk), offset);
+                offset += chunk.byteLength;
+            });
+            coachAudioChunks = [];
+            enqueueCoachAudio(merged.buffer);
+        }
+
+        function enqueueCoachAudio(arrayBuffer) {
+            ensureCoachAudioContext();
+            coachAudioContext.decodeAudioData(arrayBuffer).then(buffer => {
+                coachAudioQueue.push(buffer);
+                playNextCoachAudio();
+            }).catch(() => {
+            });
+        }
+
+        function playNextCoachAudio() {
+            if (coachAudioPlaying || coachAudioQueue.length === 0) return;
+            coachAudioPlaying = true;
+            const buffer = coachAudioQueue.shift();
+            const source = coachAudioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(coachAudioContext.destination);
+            source.onended = () => {
+                coachAudioPlaying = false;
+                playNextCoachAudio();
+            };
+            source.start(0);
+        }
+
+        function pickPoseWrist(landmarks) {
+            if (!landmarks || landmarks.length < 17) return null;
+            const left = landmarks[15];
+            const right = landmarks[16];
+            const leftOk = left && (left.visibility ?? 0) >= VISIBILITY_THRESHOLD;
+            const rightOk = right && (right.visibility ?? 0) >= VISIBILITY_THRESHOLD;
+            if (leftOk && rightOk) {
+                return (left.visibility ?? 0) >= (right.visibility ?? 0) ? left : right;
+            }
+            if (leftOk) return left;
+            if (rightOk) return right;
+            return null;
+        }
+
+        function getNavelProxy(landmarks) {
+            if (!landmarks || landmarks.length < 25) return null;
+            const leftHip = landmarks[23];
+            const rightHip = landmarks[24];
+            const leftShoulder = landmarks[11];
+            const rightShoulder = landmarks[12];
+            if (!leftHip || !rightHip || !leftShoulder || !rightShoulder) return null;
+            const hip = {
+                x: (leftHip.x + rightHip.x) / 2,
+                y: (leftHip.y + rightHip.y) / 2,
+                z: (leftHip.z + rightHip.z) / 2
+            };
+            const shoulder = {
+                x: (leftShoulder.x + rightShoulder.x) / 2,
+                y: (leftShoulder.y + rightShoulder.y) / 2,
+                z: (leftShoulder.z + rightShoulder.z) / 2
+            };
+            return {
+                x: hip.x * 0.6 + shoulder.x * 0.4,
+                y: hip.y * 0.6 + shoulder.y * 0.4,
+                z: hip.z * 0.6 + shoulder.z * 0.4
+            };
+        }
+
+        function handleLiveCoach(landmarks, timestamp) {
+            if (!liveCoachEnabled) return;
+            if (!coachSocket || coachSocket.readyState !== WebSocket.OPEN) return;
+            const wrist = pickPoseWrist(landmarks);
+            if (!wrist) {
+                if (!coachLastNoHandAt) coachLastNoHandAt = timestamp;
+                if (timestamp - coachLastNoHandAt > 1500) {
+                    updateCoachVision('Hands not visible');
+                }
+                return;
+            }
+            coachLastNoHandAt = 0;
+            const now = timestamp;
+            let majorChange = false;
+            if (coachLastWrist) {
+                const dx = wrist.x - coachLastWrist.x;
+                const dy = wrist.y - coachLastWrist.y;
+                const moveDist = Math.sqrt(dx * dx + dy * dy);
+                if (moveDist > 0.08) majorChange = true;
+            } else {
+                majorChange = true;
+            }
+            if (now - coachLastSentAt < 500 && !majorChange && !lastVoiceText) {
+                return;
+            }
+            const payload = {
+                landmarks: landmarks.map(l => ({
+                    x: l.x,
+                    y: l.y,
+                    z: l.z ?? 0,
+                    visibility: l.visibility ?? 0
+                })),
+                voice_text: lastVoiceText || ""
+            };
+            coachSocket.send(JSON.stringify(payload));
+            coachLastSentAt = now;
+            coachLastWrist = { x: wrist.x, y: wrist.y, z: wrist.z ?? 0 };
+            lastVoiceText = "";
+        }
+
+        // ============ Scenario Data ============
+        const scenarios = {
+            labor: {
+                title_bn: '👶 Labor Assistance',
+                title_en: 'Labor Assistance',
+                color: '#E91E63',
+                icon: '👶',
+                instructions: [
+                    { step: 1, text_bn: 'Position mother comfortably - left lateral or semi-reclined', text_en: 'Position mother comfortably - left lateral or semi-reclined', priority: 'normal' },
+                    { step: 2, text_bn: 'Elevate pelvis in green zone (15 degrees)', text_en: 'Elevate pelvis in green zone (15 degrees)', priority: 'normal' },
+                    { step: 3, text_bn: 'Check for cord around neck when head emerges', text_en: 'Check for cord around neck when head emerges', priority: 'critical' },
+                    { step: 4, text_bn: 'Wait 30 seconds before cutting cord', text_en: 'Wait 30 seconds before cutting cord', priority: 'warning', timer: 30 }
+                ],
+                landmarks: {
+                    primary: [23, 24],  // Hips
+                    secondary: [11, 12] // Shoulders
+                },
+                overlay: 'pelvis_guide'
+            },
+            bleeding: {
+                title_bn: '🩸 Postpartum Hemorrhage',
+                title_en: 'Postpartum Hemorrhage',
+                color: '#F44336',
+                icon: '🩸',
+                instructions: [
+                    { step: 1, text_bn: 'Call 999 NOW - This is an emergency', text_en: 'Call 999 NOW - This is an emergency', priority: 'critical' },
+                    { step: 2, text_bn: 'Uterine massage: Press firmly in red circle below navel', text_en: 'Uterine massage: Press firmly in red circle below navel', priority: 'critical' },
+                    { step: 3, text_bn: 'Rotate clockwise for 15 minutes', text_en: 'Rotate clockwise for 15 minutes', priority: 'critical', timer: 900 },
+                    { step: 4, text_bn: 'Elevate legs - prevent shock', text_en: 'Elevate legs - prevent shock', priority: 'warning' }
+                ],
+                landmarks: {
+                    primary: [23, 24],
+                    secondary: [0]
+                },
+                overlay: 'fundal_massage'
+            },
+            seizure: {
+                title_bn: '⚡ Seizure / Eclampsia',
+                title_en: 'Seizure / Eclampsia',
+                color: '#FF9800',
+                icon: '⚡',
+                instructions: [
+                    { step: 1, text_bn: 'Call 999 immediately', text_en: 'Call 999 immediately', priority: 'critical' },
+                    { step: 2, text_bn: 'Turn mother to LEFT side - follow arrow direction', text_en: 'Turn mother to LEFT side - follow arrow direction', priority: 'critical' },
+                    { step: 3, text_bn: 'Nothing in mouth - tongue biting is normal', text_en: 'Nothing in mouth - tongue biting is normal', priority: 'warning' },
+                    { step: 4, text_bn: 'Keep airway clear - remove vomit if any', text_en: 'Keep airway clear - remove vomit if any', priority: 'critical' }
+                ],
+                landmarks: {
+                    primary: [11, 23],
+                    secondary: [12, 24]
+                },
+                overlay: 'recovery_position'
+            },
+            newborn: {
+                title_bn: '👶💚 Neonatal Resuscitation',
+                title_en: 'Neonatal Resuscitation',
+                color: '#4CAF50',
+                icon: '👶💚',
+                instructions: [
+                    { step: 1, text_bn: 'Dry baby with cloth - stimulate', text_en: 'Dry baby with cloth - stimulate', priority: 'critical' },
+                    { step: 2, text_bn: 'Tilt head slightly back - open airway', text_en: 'Tilt head slightly back - open airway', priority: 'critical' },
+                    { step: 3, text_bn: 'If not breathing: Give 5 rescue breaths', text_en: 'If not breathing: Give 5 rescue breaths', priority: 'critical' },
+                    { step: 4, text_bn: 'No heartbeat: Start chest compressions (100-120/min)', text_en: 'No heartbeat: Start chest compressions (100-120/min)', priority: 'critical', metronome: true }
+                ],
+                landmarks: {
+                    primary: [11, 12],
+                    secondary: [23, 24]
+                },
+                overlay: 'chest_compressions'
+            }
+        };
+
+        // ============ Clinical Mode (Doctor) ============
+
+        window.openClinicalMode = async function () {
+            const modal = document.getElementById('clinicalModal');
+            const content = document.getElementById('clinicalContent');
+            modal.style.display = 'block';
+
+            // Show loading
+            content.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div class="loading-spinner" style="margin: 0 auto; border-top-color: #00BCD4;"></div>
+                    <p style="margin-top: 15px; color: #aaa;">Generating Senior Clinical Insight...</p>
+                </div>
+            `;
+
+            try {
+                // Prepare context (Mock Vitals for Demo + Real Scenario)
+                const vitals = {
+                    "Scenario": currentScenario,
+                    "Timestamp": new Date().toISOString(),
+                    "Detected_Body": bodyDetected ? "Yes" : "No"
+                };
+
+                const response = await fetch('/api/midwife/clinical-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: "demo_patient_001",
+                        include_vitals: true,
+                        vitals: vitals
+                    })
+                });
+
+                const apiResponse = await response.json();
+
+                if (!apiResponse.success || !apiResponse.report) {
+                    throw new Error(apiResponse.message_bengali || apiResponse.error || "Failed to generate report");
+                }
+
+                const data = apiResponse.report;
+
+                // Render Report
+                content.innerHTML = `
+                    <div style="margin-bottom: 20px; border-left: 4px solid #00BCD4; padding-left: 15px;">
+                        <h3 style="color: #00BCD4; font-size: 16px;">Clinical Summary</h3>
+                        <p style="font-size: 14px; line-height: 1.5;">${data.clinical_summary || 'No summary available.'}</p>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #aaa; font-size: 12px; text-transform: uppercase; margin-bottom: 10px;">Potential Causality</h4>
+                        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; font-size: 14px;">
+                            ${data.potential_causality || 'N/A'}
+                        </div>
+                    </div>
+
+                    <!-- Differential Diagnosis -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #aaa; font-size: 12px; text-transform: uppercase; margin-bottom: 10px;">Differential Diagnosis</h4>
+                        ${(data.differential_diagnoses || []).map(d => `
+                            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 8px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: bold; color: ${d.likelihood === 'High' ? '#F44336' : 'white'};">${d.condition_name}</div>
+                                    <div style="font-size: 11px; opacity: 0.7;">${d.supporting_evidence?.join(', ')}</div>
+                                </div>
+                                <div style="font-size: 12px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px;">${d.likelihood}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Interventions -->
+                    <div>
+                        <h4 style="color: #aaa; font-size: 12px; text-transform: uppercase; margin-bottom: 10px;">Recommended Interventions</h4>
+                        ${(data.recommended_interventions || []).map(i => `
+                            <div style="background: rgba(0, 188, 212, 0.1); border: 1px solid rgba(0, 188, 212, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                    <strong style="color: #00BCD4;">${i.action}</strong>
+                                    <span style="font-size: 11px; background: #00BCD4; color: black; padding: 2px 6px; border-radius: 4px;">${i.urgency}</span>
+                                </div>
+                                <div style="font-size: 12px; opacity: 0.8;">${i.rationale}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <div style="margin-top: 15px; font-size: 10px; opacity: 0.5; text-align: center;">
+                        Confidence Score: ${data.confidence_score} | ID: ${data.patient_id}
+                    </div>
+                `;
+
+            } catch (e) {
+                console.error(e);
+                content.innerHTML = `
+                    <div style="text-align: center; color: #F44336; padding: 30px;">
+                        <h3>Failed to generate report</h3>
+                        <p>${e.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ============ Initialize System ============
+        async function init() {
+            video = document.getElementById('ar-video');
+            canvas = document.getElementById('ar-canvas');
+            ctx = canvas.getContext('2d');
+
+            // Setup connectivity monitoring
+            setupConnectivityMonitor();
+
+            // Setup battery monitoring
+            setupBatteryMonitor();
+
+            // Load MediaPipe
+            const loaded = await loadMediaPipe();
+            if (!loaded) {
+                document.getElementById('loadingOverlay').innerHTML = `
+                    <p style="color: #F44336; font-size: 18px;">❌ AR system failed to load</p>
+                    <p style="margin-top: 10px;">Check your internet connection</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 12px 25px; border: none; border-radius: 20px; background: #E91E63; color: white; cursor: pointer;">Try again</button>
+                `;
+                return;
+            }
+
+            // Create pose landmarker
+            try {
+                const vision = await FilesetResolver.forVisionTasks(
+                    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm"
+                );
+
+                poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+                    baseOptions: {
+                        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+                        delegate: "GPU"
+                    },
+                    runningMode: "VIDEO",
+                    numPoses: 1
+                });
+
+                console.log('✅ Pose Landmarker created');
+            } catch (e) {
+                console.error('❌ Failed to create Pose Landmarker:', e);
+            }
+
+            // Start camera
+            await startCamera();
+
+            // Hide loading overlay
+            document.getElementById('loadingOverlay').style.display = 'none';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const requestedScenario = (urlParams.get('scenario') || '').toLowerCase();
+            const scenario = scenarios[requestedScenario] ? requestedScenario : 'labor';
+            const autoStart = urlParams.get('auto_start') === 'true';
+            selectScenario(scenario);
+            void autoStart;
+
+            if (liveCoachEnabled) {
+                updateCoachStatus('Connecting...', '#BDBDBD');
+                connectLiveCoach();
+            }
+
+            // Start processing loop
+            requestAnimationFrame(processFrame);
+        }
+
+        // ============ Camera Setup ============
+        // ============ Camera Setup ============
+        async function startCamera() {
+            let stream = null;
+
+            try {
+                // Attempt 1: Standard Mobile Config (Rear Camera + Audio)
+                console.log("Attempting primary camera config...");
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: true
+                });
+            } catch (e1) {
+                console.warn('Primary camera config failed:', e1);
+
+                try {
+                    // Attempt 2: Laptop/Basic Config (Any Camera + Audio)
+                    console.log("Attempting fallback config 1 (Basic)...");
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: true
+                    });
+                } catch (e2) {
+                    console.warn('Fallback config 1 failed:', e2);
+
+                    try {
+                        // Attempt 3: Emergency Config (Video Only - No Audio)
+                        // Sometimes audio permission blocks the whole thing
+                        console.log("Attempting fallback config 2 (Video Only)...");
+                        stream = await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: false
+                        });
+                        alert("Warning: Microphone is not working. Video is active only.");
+                    } catch (e3) {
+                        console.error('All camera attempts failed:', e3);
+                        // Detailed error for debugging
+                        const errorDetails = `Name: ${e3.name}, Message: ${e3.message}`;
+                        alert(`⚠️ Camera error!\n\nReason: ${e3.name}\n\nDetails: ${e3.message}\n\nPlease check:\n1. Camera permission is allowed in the browser\n2. Another app is not using the camera`);
+                        return;
+                    }
+                }
+            }
+
+            // Success handling
+            try {
+                // Separate video track for video element
+                const videoStream = new MediaStream(stream.getVideoTracks());
+                video.srcObject = videoStream;
+
+                // Handle audio tracks if present
+                const audioTracks = stream.getAudioTracks();
+                if (audioTracks.length > 0) {
+                    window.globalAudioStream = new MediaStream(audioTracks);
+                }
+
+                await new Promise(resolve => {
+                    video.onloadedmetadata = () => {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        resolve();
+                    };
+                });
+
+                await video.play();
+                console.log('✅ Camera started successfully');
+            } catch (setupError) {
+                console.error('Error setting up video stream:', setupError);
+                alert('Unable to start video stream: ' + setupError.message);
+            }
+        }
+
+        // ============ Frame Processing ============
+        function processFrame(timestamp) {
+            if (!poseLandmarker || !video.videoWidth) {
+                requestAnimationFrame(processFrame);
+                return;
+            }
+
+            // Calculate FPS
+            frameCount++;
+            if (timestamp - lastFpsUpdate > 1000) {
+                fps = frameCount;
+                frameCount = 0;
+                lastFpsUpdate = timestamp;
+                document.getElementById('fpsText').textContent = fps + ' FPS';
+            }
+
+            // Process pose
+            const results = poseLandmarker.detectForVideo(video, timestamp);
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Track body detection and update status
+            const hasBody = results.landmarks && results.landmarks.length > 0;
+
+            if (hasBody) {
+                // Body detected
+                bodyDetected = true;
+                lastBodyDetectedTime = timestamp;
+                noBodyWarningShown = false;
+
+                // Update status badge - Green
+                document.getElementById('arStatusBadge').style.background = 'rgba(76, 175, 80, 0.9)';
+                document.getElementById('arStatusBadge').style.color = 'white';
+                document.getElementById('arStatusIcon').textContent = '✅';
+                document.getElementById('arStatusText').textContent = 'Body detected';
+
+                // Hide warning
+                document.getElementById('noBodyWarning').style.display = 'none';
+
+                // Draw AR overlays
+                drawAROverlay(results.landmarks[0], currentScenario);
+
+                // Analyze position and show guidance if needed
+                const guidance = analyzeBodyPosition(results.landmarks[0]);
+                updatePositionGuidance(guidance);
+
+                handleLiveCoach(results.landmarks[0], timestamp);
+            } else {
+                // No body detected
+                bodyDetected = false;
+
+                // Check if we should show warning (after timeout)
+                if (timestamp - lastBodyDetectedTime > NO_BODY_TIMEOUT_MS) {
+                    if (!noBodyWarningShown) {
+                        noBodyWarningShown = true;
+                    }
+
+                    // Update status badge - Red
+                    document.getElementById('arStatusBadge').style.background = 'rgba(244, 67, 54, 0.9)';
+                    document.getElementById('arStatusBadge').style.color = 'white';
+                    document.getElementById('arStatusIcon').textContent = '⚠️';
+                    document.getElementById('arStatusText').textContent = 'Body not visible';
+
+                    // Show warning
+                    document.getElementById('noBodyWarning').style.display = 'block';
+                } else {
+                    // Still scanning (within timeout)
+                    document.getElementById('arStatusBadge').style.background = 'rgba(255, 193, 7, 0.9)';
+                    document.getElementById('arStatusBadge').style.color = '#333';
+                    document.getElementById('arStatusIcon').textContent = '🔍';
+                    document.getElementById('arStatusText').textContent = 'Scanning...';
+                }
+                if (liveCoachEnabled) {
+                    updateCoachVision('Body not visible');
+                }
+            }
+
+            requestAnimationFrame(processFrame);
+        }
+
+        // ============ AR Overlay Drawing ============
+        function drawAROverlay(landmarks, scenario) {
+            const config = scenarios[scenario];
+            if (!config) return;
+
+            ctx.save();
+
+            switch (config.overlay) {
+                case 'pelvis_guide':
+                    drawPelvisGuide(landmarks, config.color);
+                    break;
+                case 'fundal_massage':
+                    drawFundalMassageZone(landmarks, config.color);
+                    break;
+                case 'recovery_position':
+                    drawRecoveryPositionArrow(landmarks, config.color);
+                    break;
+                case 'chest_compressions':
+                    drawChestCompressionZone(landmarks, config.color);
+                    break;
+            }
+
+            // Draw skeleton for reference
+            drawSkeleton(landmarks);
+
+            ctx.restore();
+        }
+
+        // Pelvis Guide for Labor
+        function drawPelvisGuide(landmarks, color) {
+            const hipL = landmarks[23];
+            const hipR = landmarks[24];
+
+            if (!hipL || !hipR) return;
+
+            const centerX = ((hipL.x + hipR.x) / 2) * canvas.width;
+            const centerY = ((hipL.y + hipR.y) / 2) * canvas.height;
+            const radius = Math.abs(hipL.x - hipR.x) * canvas.width * 0.6;
+
+            // Green zone for pelvic positioning
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - radius * 0.3, radius, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(76, 175, 80, 0.3)';
+            ctx.fill();
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Label
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('ACTION: Elevate Pelvis 15°', centerX, centerY - radius - 20);
+            ctx.font = '12px Arial';
+            ctx.fillText('✓ green zone', centerX, centerY - radius * 0.3);
+        }
+
+        // Fundal Massage Zone for PPH
+        function drawFundalMassageZone(landmarks, color) {
+            const hipL = landmarks[23];
+            const hipR = landmarks[24];
+            const shoulderL = landmarks[11];
+
+            if (!hipL || !hipR) return;
+
+            const centerX = ((hipL.x + hipR.x) / 2) * canvas.width;
+            const centerY = ((hipL.y + hipR.y) / 2) * canvas.height - 50; // Above hips
+            const radius = 60;
+
+            // Pulsating red circle
+            const pulse = Math.sin(Date.now() / 200) * 0.3 + 0.7;
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius * pulse, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(244, 67, 54, ${0.3 * pulse})`;
+            ctx.fill();
+            ctx.strokeStyle = '#F44336';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
+            // Arrow showing massage direction (clockwise)
+            drawRotationArrow(centerX, centerY, radius * 1.2, '#F44336');
+
+            // Label
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('ACTION: Press & Massage', centerX, centerY - radius - 20);
+            ctx.font = '12px Arial';
+            ctx.fillText('Press clockwise', centerX, centerY + radius + 25);
+        }
+
+        // Recovery Position Arrow for Seizure
+        function drawRecoveryPositionArrow(landmarks, color) {
+            const shoulderL = landmarks[11];
+            const shoulderR = landmarks[12];
+            const hipL = landmarks[23];
+
+            if (!shoulderL || !shoulderR || !hipL) return;
+
+            const startX = shoulderR.x * canvas.width;
+            const startY = shoulderR.y * canvas.height;
+            const endX = shoulderL.x * canvas.width - 100;
+            const endY = shoulderL.y * canvas.height;
+
+            // Large arrow showing direction to roll
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = '#FF9800';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            // Arrow head
+            const angle = Math.atan2(endY - startY, endX - startX);
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(endX - 30 * Math.cos(angle - 0.5), endY - 30 * Math.sin(angle - 0.5));
+            ctx.lineTo(endX - 30 * Math.cos(angle + 0.5), endY - 30 * Math.sin(angle + 0.5));
+            ctx.closePath();
+            ctx.fillStyle = '#FF9800';
+            ctx.fill();
+
+            // Label
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('ACTION: Rotate to Left Side', (startX + endX) / 2, startY - 50);
+            ctx.font = '14px Arial';
+            ctx.fillText('← rotate left', (startX + endX) / 2, startY - 25);
+        }
+
+        // Chest Compression Zone for Newborn
+        function drawChestCompressionZone(landmarks, color) {
+            const shoulderL = landmarks[11];
+            const shoulderR = landmarks[12];
+
+            if (!shoulderL || !shoulderR) return;
+
+            // Mother's chest area for skin-to-skin reference
+            const centerX = ((shoulderL.x + shoulderR.x) / 2) * canvas.width;
+            const centerY = ((shoulderL.y + shoulderR.y) / 2) * canvas.height + 80;
+
+            // Heat map style overlay
+            const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 100);
+            gradient.addColorStop(0, 'rgba(76, 175, 80, 0.6)');
+            gradient.addColorStop(0.5, 'rgba(76, 175, 80, 0.3)');
+            gradient.addColorStop(1, 'rgba(76, 175, 80, 0)');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(centerX - 100, centerY - 100, 200, 200);
+
+            // Label
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Skin-to-skin contact', centerX, centerY);
+            ctx.font = '12px Arial';
+            ctx.fillText('Skin-to-skin', centerX, centerY + 18);
+        }
+
+        // Draw rotation arrow
+        function drawRotationArrow(cx, cy, radius, color) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, -0.5, Math.PI * 1.5, false);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Arrow head at end of arc
+            const angle = Math.PI * 1.5;
+            const ax = cx + radius * Math.cos(angle);
+            const ay = cy + radius * Math.sin(angle);
+
+            ctx.beginPath();
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(ax + 15, ay - 10);
+            ctx.lineTo(ax + 5, ay + 10);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        // Draw skeleton
+        function drawSkeleton(landmarks) {
+            const connections = [
+                [11, 12], [11, 13], [13, 15], [12, 14], [14, 16],
+                [11, 23], [12, 24], [23, 24], [23, 25], [24, 26]
+            ];
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+
+            connections.forEach(([i, j]) => {
+                if (landmarks[i] && landmarks[j]) {
+                    ctx.beginPath();
+                    ctx.moveTo(landmarks[i].x * canvas.width, landmarks[i].y * canvas.height);
+                    ctx.lineTo(landmarks[j].x * canvas.width, landmarks[j].y * canvas.height);
+                    ctx.stroke();
+                }
+            });
+
+            // Draw key landmarks
+            [11, 12, 23, 24].forEach(i => {
+                if (landmarks[i]) {
+                    ctx.beginPath();
+                    ctx.arc(landmarks[i].x * canvas.width, landmarks[i].y * canvas.height, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(233, 30, 99, 0.8)';
+                    ctx.fill();
+                }
+            });
+        }
+
+        // ============ Scenario Selection ============
+        window.selectScenario = async function (scenario) {
+            currentScenario = scenario;
+
+            const config = scenarios[scenario];
+            if (config) {
+                const iconEl = document.getElementById('protocolIcon');
+                const nameEl = document.getElementById('protocolName');
+                if (iconEl) iconEl.textContent = config.icon || '🏥';
+                if (nameEl) nameEl.textContent = config.title_en || 'Emergency Protocol';
+            }
+
+            // Update instructions
+            await renderInstructions(scenario);
+
+            // Stop any running timers/metronome
+            stopTimer();
+            stopMetronome();
+        };
+
+        // ============ AI Feature ============
+        window.openAIModal = function () {
+            document.getElementById('aiModal').style.display = 'flex';
+            document.getElementById('aiInput').focus();
+        };
+
+        window.closeAIModal = function () {
+            document.getElementById('aiModal').style.display = 'none';
+        };
+
+        window.startVoiceInput = function () {
+            alert('Voice input is disabled. Use text input.');
+        };
+
+        window.startServerVoiceInput = async function () {
+            alert('Voice input is disabled. Use text input.');
+        }
+
+
+        // ============ Hospital & Doctor Data ============
+        let nearbyHospitalData = null;
+        let userLocation = null;
+
+        // ============ Personalization & Profile ============
+        const mockPatientProfile = {
+            id: "P-102",
+            name: "Fatema Begum",
+            age: 26,
+            trimester: 3,
+            blood_group: "B+",
+            risk_level: "High (Prev. Hemorrhage)",
+            last_checkup: "2025-11-20"
+        };
+
+        async function fetchNearbyHospitalData(emergencyType = 'HEMORRHAGE') {
+            if (nearbyHospitalData) return nearbyHospitalData;
+
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    console.warn("Geolocation not supported");
+                    resolve(null);
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    try {
+                        const response = await fetch('/api/midwife/emergency/activate', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                user_id: 'ar_user_' + Date.now(),
+                                trigger_source: 'ar_dashboard',
+                                detected_emergency: emergencyType,
+                                red_flags: [emergencyType === 'bleeding' ? 'hemorrhage' : (emergencyType === 'seizure' ? 'eclampsia' : 'hemorrhage')],
+                                patient_location: userLocation,
+                                patient_profile: mockPatientProfile
+                            })
+                        });
+
+                        const data = await response.json();
+                        if (data.success) {
+                            nearbyHospitalData = data.emergency;
+                            resolve(nearbyHospitalData);
+                        } else {
+                            console.error("API Error Response:", data);
+                            resolve(null);
+                        }
+                    } catch (e) {
+                        console.error("Error fetching hospital data:", e);
+                        resolve(null);
+                    }
+                }, (err) => {
+                    console.warn("Geolocation error:", err);
+                    resolve(null);
+                });
+            });
+        }
+
+        window.submitAIQuery = async function () {
+            const query = document.getElementById('aiInput').value;
+            if (!query) return;
+            lastVoiceText = query;
+
+            const btn = document.querySelector('button[onclick="submitAIQuery()"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Please wait...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/ar-labor/consult', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        patient_profile: mockPatientProfile
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeAIModal();
+                    // Inject the new scenario into the registry
+                    scenarios['ai_consult'] = data.scenario;
+                    selectScenario('ai_consult');
+
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Check your internet connection.');
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // ============ Render Instructions ============
+        async function renderInstructions(scenario) {
+            const config = scenarios[scenario];
+            const panel = document.getElementById('instructionsPanel');
+
+            // Trigger hospital data fetch if it's an emergency scenario
+            const isEmergency = ['bleeding', 'seizure', 'newborn', 'ai_consult'].includes(scenario);
+            if (isEmergency && !nearbyHospitalData) {
+                await fetchNearbyHospitalData(scenario);
+            }
+
+            let html = `
+                <div class="instruction-header">
+                    <span class="icon">${config.icon}</span>
+                    <div>
+                        <div class="title">${config.title_en}</div>
+                        <div style="font-size: 11px; opacity: 0.7; margin-top: 2px;">WHO protocol • First-aid steps</div>
+                    </div>
+                </div>
+            `;
+
+            // Hospital Card (Live Data)
+            if (isEmergency && nearbyHospitalData) {
+                html += `
+                    <div style="background: rgba(244, 67, 54, 0.15); border: 1px solid #F44336; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <div>
+                                <strong style="color: #F44336; font-size: 14px;">🏥 Nearest hospital:</strong>
+                                <div style="font-size: 16px; font-weight: bold; margin-top: 5px;">${nearbyHospitalData.nearest_hospital}</div>
+                                <div style="font-size: 12px; opacity: 0.8; margin-top: 2px;">📍 ${nearbyHospitalData.hospital_distance_km} km away | ⏱️ ${nearbyHospitalData.estimated_response_time}</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <a href="tel:${nearbyHospitalData.hospital_phone}" style="background: #4CAF50; color: white; padding: 8px 15px; border-radius: 15px; text-decoration: none; font-size: 14px; font-weight: bold; text-align: center;">📞 Call</a>
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${nearbyHospitalData.hospital_lat},${nearbyHospitalData.hospital_lng}" target="_blank" style="background: #2196F3; color: white; padding: 8px 15px; border-radius: 15px; text-decoration: none; font-size: 14px; font-weight: bold; text-align: center;">🗺️ Map</a>
+                            </div>
+                        </div>
+
+                        ${nearbyHospitalData.emergency_unit ? `
+                        <div style="background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 10px; margin-bottom: 5px; border-left: 4px solid #4CAF50;">
+                            <strong style="font-size: 12px; color: #4CAF50; display: block; margin-bottom: 2px;">🏥 Go here (entry):</strong>
+                            <div style="font-size: 15px; font-weight: bold; color: white;">${nearbyHospitalData.emergency_unit}</div>
+                        </div>
+                        ` : ''}
+                        
+                        ${nearbyHospitalData.available_doctors && nearbyHospitalData.available_doctors.length > 0 ? `
+                        <div style="border-top: 1px solid rgba(255,255,255,0.1); pt-10; margin-top: 10px; padding-top: 10px;">
+                            <strong style="font-size: 12px; opacity: 0.7;">👨‍⚕️ On-duty specialists:</strong>
+                            ${nearbyHospitalData.available_doctors.slice(0, 2).map(doc => `
+                                <div style="font-size: 13px; margin-top: 5px; display: flex; justify-content: space-between;">
+                                    <span>${doc.name} (${doc.role})</span>
+                                    <span style="color: #4CAF50;">● ${doc.available}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+
+            // Personalization Badge
+            if (nearbyHospitalData && mockPatientProfile) {
+                html += `
+                    <div style="background: linear-gradient(90deg, #9C27B0, #E91E63); color: white; padding: 5px 15px; border-radius: 15px; font-size: 11px; font-weight: bold; margin-bottom: 15px; display: inline-block; box-shadow: 0 2px 10px rgba(233, 30, 99, 0.3);">
+                        ✨ Personalized guidance for: ${mockPatientProfile.name} (${mockPatientProfile.blood_group})
+                    </div>
+                `;
+            }
+
+            config.instructions.forEach(inst => {
+                const priorityClass = inst.priority === 'critical' ? 'critical' : inst.priority === 'warning' ? 'warning' : '';
+
+                html += `
+                    <div class="instruction-step ${priorityClass}">
+                        <div class="step-number">${inst.step}</div>
+                        <div class="step-content">
+                            <div class="step-en">${inst.text_en}</div>
+                        </div>
+                        ${inst.timer ? `<button class="speak-btn" onclick="startTimer(${inst.timer})">⏱️</button>` : ''}
+                        ${inst.metronome ? `<button class="speak-btn" onclick="startMetronome()">💓</button>` : ''}
+                    </div>
+                `;
+            });
+
+            panel.innerHTML = html;
+        }
+
+        // ============ Timer Functions ============
+        let timerInterval = null;
+
+        window.startTimer = function (seconds) {
+            const overlay = document.getElementById('timerOverlay');
+            const display = document.getElementById('timerDisplay');
+            const label = document.getElementById('timerLabel');
+
+            let remaining = seconds;
+            display.textContent = remaining;
+            if (label) label.textContent = 'seconds left';
+            overlay.style.display = 'block';
+
+            timerInterval = setInterval(() => {
+                remaining--;
+                display.textContent = remaining;
+
+                if (remaining <= 0) {
+                    if (timerInterval) clearInterval(timerInterval);
+                    timerInterval = null;
+                    display.textContent = '0';
+                    if (label) label.textContent = 'Time is up!';
+                }
+            }, 1000);
+        };
+
+        window.stopTimer = function () {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('timerOverlay').style.display = 'none';
+        };
+
+        // ============ Metronome for CPR ============
+        let metronomeInterval = null;
+        let compressionCount = 0;
+
+        window.startMetronome = function () {
+            const metronome = document.getElementById('metronome');
+            const circle = document.getElementById('metronomeCircle');
+            const countDisplay = document.getElementById('metronomeCount');
+
+            metronome.style.display = 'block';
+            compressionCount = 0;
+
+            // 110 BPM = ~545ms per beat
+            metronomeInterval = setInterval(() => {
+                compressionCount++;
+                countDisplay.textContent = compressionCount;
+
+                circle.classList.add('beat');
+                setTimeout(() => circle.classList.remove('beat'), 200);
+
+                // Audio beep
+                playBeep();
+
+                // Reset count at 30
+                if (compressionCount >= 30) {
+                    compressionCount = 0;
+                    countDisplay.textContent = 'Give 2 breaths';
+                    setTimeout(() => {
+                        if (metronomeInterval) countDisplay.textContent = compressionCount;
+                    }, 900);
+                }
+            }, 545);
+        };
+
+        window.stopMetronome = function () {
+            if (metronomeInterval) {
+                clearInterval(metronomeInterval);
+                metronomeInterval = null;
+            }
+            document.getElementById('metronome').style.display = 'none';
+        };
+
+        // Audio beep for metronome
+        function playBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                oscillator.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.05);
+            } catch (e) { }
+        }
+
+        window.speak = function () { };
+
+        // ============ Connectivity Monitor ============
+        function setupConnectivityMonitor() {
+            const updateStatus = () => {
+                const el = document.getElementById('connectionStatus');
+                const text = document.getElementById('connectionText');
+                if (navigator.onLine) {
+                    el.className = 'status-item online';
+                    text.textContent = 'Online';
+                } else {
+                    el.className = 'status-item offline';
+                    text.textContent = 'Offline';
+                }
+            };
+
+            window.addEventListener('online', updateStatus);
+            window.addEventListener('offline', updateStatus);
+            updateStatus();
+        }
+
+        // ============ Battery Monitor ============
+        async function setupBatteryMonitor() {
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const update = () => {
+                        const percent = Math.round(battery.level * 100);
+                        document.getElementById('batteryText').textContent = percent + '%';
+                        document.getElementById('batteryStatus').style.color =
+                            percent < 20 ? '#F44336' : percent < 50 ? '#FF9800' : '#4CAF50';
+                    };
+                    battery.addEventListener('levelchange', update);
+                    update();
+                } catch (e) { }
+            }
+        }
+
+        // ============ Initialize ============
+        init();
+    </script>
+
+    <!-- Register Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/static/ar-emergency-sw.js')
+                .then(reg => console.log('✅ Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+{
+  "persist_test_user": {
+    "filename": "test.docx",
+    "structured_info": {
+      "test": "data",
+      "extracted_at": "now"
+    }
+  },
+  "user_123": [
+    {
+      "extracted_at": "2026-02-08T00:44:04.502594",
+      "filename": "prescrpm.docx",
+      "raw_text_snippet": "This example profile illustrates a complex case involving a pregnant woman in her second trimester (13–27 weeks) who is managing Iron Deficiency Anemia alongside other common but serious co-existing conditions.\nPatient Profile: Example Case Study\n1. Basic Information\nPatient Name: Mrs. J. Rahman\nAge: 29 years old\nGestational Age: 22 Weeks (Second Trimester)\nPregnancy Status: G2P1 (Second pregnancy, one previous birth)\n2. Clinical Diagnoses\nBeyond the primary concern of pregnancy, the patient presents with a \"comorbidity triad\":\nIron Deficiency Anemia (Moderate): Hemoglobin level is 9.2 g/dL (Normal for 2nd trimester is $>10.5$ g/dL).\nGestational Diabetes Mellitus (GDM): Diagnosed via Oral Glucose Tolerance Test (OGTT) at 20 weeks.\nChronic Hypertension: High blood pressure predating the pregnancy, currently managed with medication.\n3. Symptom Checklist\nMrs. Rahman reports the following symptoms, which are a mix of pregnancy changes and her specific diseases:\nAnemia Related: Persistent fatigue, shortness of breath during light walks, and occasional dizziness (vertigo).\nGDM Related: Increased thirst (polydipsia) and frequent urination beyond the usual pregnancy frequency.\nHypertension Related: Occasional mild headaches and slight swelling (edema) in the ankles.\n4. Vital Signs & Lab Data\n5. Management Plan\nBecause she has multiple diseases, her care requires a balanced approach to ensure treatments for one condition don't worsen another:\nFor Anemia: * Oral Iron Supplements (Ferrous Fumarate) 200mg twice daily.\nVitamin C supplementation to increase iron absorption.\nCaution: Iron can cause constipation, which is already a risk in the 2nd trimester.1\nFor Gestational Diabetes: * A strict low-glycemic index (Low-GI) diet.\nMonitoring blood glucose 4 times a day (fasting and after meals).\nFor Hypertension: * Prescribed Labetalol (a pregnancy-safe beta-blocker).2\nLow-sodium diet.\nFetal Monitoring: * Monthly growth scans (Ultrasounds) to ensure the baby is growing correctly desp",
+      "structured_info": {
+        "patient_name": "Mrs. J. Rahman",
+        "age": 29,
+        "trimester": "second",
+        "week": 22,
+        "blood_group": null,
+        "weight_kg": null,
+        "height_cm": null,
+        "medical_conditions": [
+          "Iron Deficiency Anemia",
+          "Gestational Diabetes Mellitus",
+          "Chronic Hypertension"
+        ],
+        "past_medical_history": [],
+        "family_history": [],
+        "allergies": [],
+        "current_medications": [
+          "Ferrous Fumarate 200mg",
+          "Vitamin C",
+          "Labetalol"
+        ],
+        "hemoglobin_level": 9.2,
+        "blood_sugar_fasting": 105,
+        "blood_pressure": "145/95 mmHg",
+        "monthly_income_bdt": null,
+        "food_budget_weekly_bdt": null,
+        "dietary_preferences": [],
+        "foods_disliked": [],
+        "previous_pregnancies": 1,
+        "complications_history": [],
+        "notes": "G2P1 (Second pregnancy, one previous birth). Symptoms: fatigue, shortness of breath, dizziness, increased thirst, frequent urination, headaches, ankle swelling. Management: oral iron supplements, low-GI diet, blood glucose monitoring, low-sodium diet, monthly growth scans. Risks: pre-eclampsia, postpartum hemorrhage, IUGR, macrosomia."
+      },
+      "extraction_confidence": 0.85,
+      "validation_status": "pending",
+      "extracted_by_model": "gemini-1.5-flash",
+      "schema_version": "1.1"
+    }
+  ]
+}

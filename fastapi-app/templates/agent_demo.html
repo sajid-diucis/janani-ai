@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janani AI - Omniscient Agent Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, #e94560, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #8b8b8b;
+            font-size: 1rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+        }
+
+        /* Patient Context Card */
+        .context-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .context-card h2 {
+            color: #00d9ff;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .patient-name {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .patient-week {
+            text-align: center;
+            color: #00ff88;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-label {
+            color: #8b8b8b;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .danger-badge {
+            background: #e94560;
+            color: #fff;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .warning-box {
+            background: rgba(233, 69, 96, 0.2);
+            border: 1px solid #e94560;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .warning-box h3 {
+            color: #e94560;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .warning-box ul {
+            list-style: none;
+            font-size: 0.9rem;
+        }
+
+        .warning-box li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Chat Section */
+        .chat-section {
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header h2 {
+            color: #00d9ff;
+            font-size: 1.2rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            text-align: right;
+        }
+
+        .message-bubble {
+            display: inline-block;
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.5;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.agent .message-bubble {
+            background: rgba(0, 217, 255, 0.2);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-bottom-left-radius: 5px;
+        }
+
+        .message-sender {
+            font-size: 0.8rem;
+            color: #8b8b8b;
+            margin-bottom: 5px;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 30px;
+            padding: 15px 25px;
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .chat-input::placeholder {
+            color: #666;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #00d9ff;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .send-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #000;
+        }
+
+        .voice-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, background 0.2s, border-color 0.2s;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.05);
+            border-color: #ff6b6b;
+        }
+
+        .voice-btn.recording {
+            background: linear-gradient(135deg, #e94560, #ff6b6b);
+            border-color: #ff6b6b;
+            box-shadow: 0 0 15px rgba(233, 69, 96, 0.6);
+        }
+
+        .voice-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        .causal-inline {
+            background: rgba(0, 217, 255, 0.12);
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            border-radius: 14px;
+            padding: 8px 12px;
+            color: #e8f7ff;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            line-height: 1.2;
+            min-width: 110px;
+        }
+
+        .causal-inline:hover {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00d9ff;
+        }
+
+        .tool-card {
+            background: rgba(0, 217, 255, 0.12);
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .tool-title {
+            font-weight: 700;
+            color: #00d9ff;
+            margin-bottom: 6px;
+        }
+
+        .tool-text {
+            white-space: pre-line;
+            margin-bottom: 8px;
+            color: #e8f7ff;
+        }
+
+        .tool-json {
+            background: rgba(0, 0, 0, 0.35);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            overflow-x: auto;
+            color: #d5f4ff;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 0 20px 20px;
+        }
+
+        .quick-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 10px 20px;
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .quick-btn:hover {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00d9ff;
+        }
+
+        .quick-btn.danger {
+            border-color: #e94560;
+        }
+
+        .quick-btn.danger:hover {
+            background: rgba(233, 69, 96, 0.2);
+        }
+
+        .causal-button {
+            margin-top: 10px;
+            background: rgba(0, 217, 255, 0.12);
+            border: 1px solid rgba(0, 217, 255, 0.4);
+            border-radius: 14px;
+            padding: 8px 14px;
+            color: #e8f7ff;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .causal-button:hover {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00d9ff;
+        }
+
+        .causal-section {
+            margin-top: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .causal-step {
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+
+        .causal-flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+        }
+
+        .causal-node {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(0, 217, 255, 0.12);
+            border: 1px solid rgba(0, 217, 255, 0.35);
+        }
+
+        .causal-arrow {
+            opacity: 0.7;
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 217, 255, 0.3);
+            border-top-color: #00d9ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧠 Janani AI Agent</h1>
+            <p class="subtitle">Omniscient Digital Midwife - Context-Aware AI</p>
+            <span class="badge">DEMO MODE - Rahima's Story</span>
+        </div>
+
+        <div class="main-grid">
+            <!-- Patient Context Card -->
+            <div class="context-card">
+                <h2>📋 Patient Context (Agent Knows This)</h2>
+
+                <div class="patient-avatar">👩</div>
+                <div class="patient-name" id="patientName">রাহিমা<br><span style="font-size:0.7em; font-weight:400; color:#ccc;">Rahima</span></div>
+                <div class="patient-week" id="patientWeek">সপ্তাহ ৩৪ • তৃতীয় ট্রাইমেস্টার<br><span style="font-size:0.7em; color:#88ffbb;">Week 34 • 3rd Trimester</span></div>
+
+                <div class="info-row">
+                    <span class="info-label">বয়স<br><span style="font-size:0.8em">Age</span></span>
+                    <span class="info-value" id="patientAge">২৮ বছর<br><span style="font-size:0.8em; font-weight:400; color:#ccc;">28 Years</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">অবস্থান<br><span style="font-size:0.8em">Location</span></span>
+                    <span class="info-value" id="patientLocation">নোয়াখালী<br><span style="font-size:0.8em; font-weight:400; color:#ccc;">Noakhali</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">রক্তচাপ<br><span style="font-size:0.8em">Blood Pressure</span></span>
+                    <span class="info-value"><span class="danger-badge" id="patientBP">140/95</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">হিমোগ্লোবিন<br><span style="font-size:0.8em">Hemoglobin</span></span>
+                    <span class="info-value" id="patientHb">10.8 g/dL</span>
+                </div>
+
+                <div class="warning-box">
+                    <h3>⚠️ সাম্প্রতিক উদ্বেগ (Recent Concerns)</h3>
+                    <ul id="recentConcerns">
+                        <li>🔴 ঝাপসা দেখছি আজকে সকাল থেকে <br><span style="font-size:0.8em; color:#ffaabb;">(Blurry vision since morning)</span></li>
+                        <li>🔴 মাথা ব্যথা করছে <br><span style="font-size:0.8em; color:#ffaabb;">(Headache)</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <h2>💬 Agent Chat</h2>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message agent">
+                        <div class="message-sender">🧠 Janani Agent (AI Midwife)</div>
+                        <div class="message-bubble">
+                            আসসালামু আলাইকুম রাহিমা! আমি জানানী, তোমার Digital Midwife। আমি জানি তুমি এখন ৩৪ সপ্তাহে আছো
+                            এবং সকাল থেকে ঝাপসা দেখছো আর মাথা ব্যথা করছে। এটা নিয়ে কথা বলো আমার সাথে।
+                            <br><br>
+                            <strong>🇬🇧 English Translation:</strong> Assalamu Alaikum Rahima! I am Janani, your Digital Midwife. I know you are at 34 weeks and experiencing blurry vision and headache since morning. Let's talk about this.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px; color: #8b8b8b;">Agent thinking...</p>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="quick-btn danger" id="btn999" onclick="callEmergency()" style="background: rgba(255, 0, 0, 0.3); border-color: red; box-shadow: 0 0 10px rgba(255,0,0,0.4);">
+                        📞 Call 999<br><span style="font-size:0.8em">Emergency</span>
+                    </button>
+                    <button class="quick-btn" onclick="generateMedicalReport()" style="background: rgba(0, 217, 255, 0.2); border-color: #00d9ff;">
+                    📋 Report<br><span style="font-size:0.8em">Generate 90-Day Analysis</span>
+                </button>
+                <button class="quick-btn" onclick="sendToDoctor()" style="background: rgba(255, 193, 7, 0.2); border-color: #ffc107; color: #ffc107;">
+                    📧 Email Doctor<br><span style="font-size:0.8em">Send Alert to Dashboard</span>
+                </button>
+                    <button class="quick-btn danger" onclick="sendQuickMessage('ব্যথা করছে')">🔴 ব্যথা করছে<br><span style="font-size:0.8em">Pain</span></button>
+                    <button class="quick-btn danger" onclick="sendQuickMessage('চোখে ঝাপসা দেখছি')">👁️ ঝাপসা দেখা<br><span style="font-size:0.8em">Blurry Vision</span></button>
+                    <button class="quick-btn" onclick="sendQuickMessage('বাচ্চা নড়ছে কিনা বুঝতে পারছি না')">👶 বাচ্চার নড়াচড়া<br><span style="font-size:0.8em">Baby Movement</span></button>
+                    <button class="quick-btn" onclick="sendQuickMessage('আমার কি খাওয়া উচিত?')">🍎 খাবার পরামর্শ<br><span style="font-size:0.8em">Diet Advice</span></button>
+                </div>
+
+                <div id="chatCausalSection" class="causal-section" style="display:none; margin: 0 20px 10px;"></div>
+
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="উদাহরণ: আমার নাম রাহিমা... (Example: My name is Rahima...)"
+                        onkeypress="handleKeyPress(event)">
+                    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z" />
+                        </svg>
+                    </button>
+                    <button class="causal-inline" onclick="toggleCausal()">🧠 কারণ বিশ্লেষণ<br><span style="font-size:0.75em; opacity:0.8;">Causal Logic</span></button>
+                    <button class="send-btn" onclick="sendMessage()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <div style="padding: 0 20px 20px; font-size: 12px; color: #8b8b8b;">
+                    প্রোফাইল আপডেট করতে লিখুন: “আমার নাম রাহিমা, বয়স 29, সপ্তাহ 40, অবস্থান নোয়াখালী” (To update profile: "My name is Rahima...")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medical Report Modal -->
+    <div id="reportModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; overflow-y:auto; padding:20px;">
+        <div style="background:#0f3460; max-width:800px; margin:20px auto; padding:30px; border-radius:15px; border:1px solid #00d9ff; box-shadow: 0 0 30px rgba(0,217,255,0.2);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+                <h2 style="color:#00d9ff; margin:0;">📋 Clinical Decision Support Report</h2>
+                <button onclick="document.getElementById('reportModal').style.display='none'" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;">&times;</button>
+            </div>
+            <div id="reportContent" style="color:#e0e0e0; font-family: 'Courier New', monospace; white-space: pre-wrap;">
+                Loading analysis...
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Bridge Script (Hotfix) -->
+    <script src="/static/emergency_redirect.js"></script>
+
+    <script>
+        const USER_ID = "user_123";
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const loading = document.getElementById('loading');
+        const voiceBtn = document.getElementById('voiceBtn');
+        let mediaRecorder = null;
+        let isRecording = false;
+        let recordedChunks = [];
+        let activeStream = null;
+        let causalCache = null;
+        let causalLoading = false;
+        let emergencyPollInterval = null;
+        let doctorActionPollInterval = null;
+        let lastDoctorActionTimestamp = null;
+
+        function startPolling() {
+            // Check every 2 seconds for updates
+            if (doctorActionPollInterval) clearInterval(doctorActionPollInterval);
+            doctorActionPollInterval = setInterval(checkDoctorActions, 2000);
+        }
+
+        async function checkDoctorActions() {
+            try {
+                const res = await fetch(`/api/medical-report/${USER_ID}/doctor-action`);
+                const data = await res.json();
+                
+                if (data.has_action) {
+                    const action = data.action;
+                    if (action.timestamp !== lastDoctorActionTimestamp) {
+                        lastDoctorActionTimestamp = action.timestamp;
+                        handleNewDoctorAction(action);
+                    }
+                }
+            } catch (e) {
+                console.error("Doctor action poll failed", e);
+            }
+        }
+
+        function handleNewDoctorAction(action) {
+            // 1. Show Toast
+            const toast = document.createElement("div");
+            toast.style.cssText = `
+                position: fixed; top: 20px; right: 20px; 
+                background: #10b981; color: white; padding: 20px; 
+                border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                z-index: 10000; display: flex; align-items: flex-start; gap: 15px;
+                animation: slideIn 0.5s ease-out; font-family: 'Segoe UI', sans-serif;
+                border-left: 5px solid #065f46;
+            `;
+            toast.innerHTML = `
+                <div style="font-size: 2rem;">👨‍⚕️</div>
+                <div>
+                    <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 5px;">New Doctor Order</div>
+                    <div style="font-size: 1rem;">${action.note}</div>
+                    <div style="font-size: 0.8rem; opacity: 0.8; margin-top: 5px;">Action: ${action.action_type.replace('_', ' ').toUpperCase()}</div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.transition = "opacity 0.5s";
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 500);
+            }, 6000);
+
+            // 2. Add to Chat
+            addMessage('agent', `👨‍⚕️ **Doctor Update:** ${action.note}`);
+            
+            // 3. Update Status Banner if Admission
+            if (action.action_type === 'approve_admission') {
+                const banner = document.createElement("div");
+                banner.innerHTML = "🚨 ADMISSION APPROVED - PREPARING TRANSFER";
+                banner.style.cssText = "background: #dc2626; color: white; text-align: center; padding: 10px; font-weight: bold; animation: pulse 2s infinite;";
+                document.querySelector('.chat-container').prepend(banner);
+            }
+        }
+
+        // Initialize polling on load
+        window.onload = startPolling;
+
+        async function callEmergency() {
+            const btn = document.getElementById('btn999');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = "⏳ Connecting...<br><span style='font-size:0.8em'>Dialing 999...</span>";
+            btn.disabled = true;
+
+            // Scrape data safely
+            const nameEl = document.getElementById('patientName');
+            const name = nameEl ? nameEl.innerText.split('\n')[0].trim() : "Unknown";
+            
+            const locEl = document.getElementById('patientLocation');
+            const location = locEl ? locEl.innerText.split('\n')[0].trim() : "Unknown";
+            
+            const bpEl = document.getElementById('patientBP');
+            const bp = bpEl ? bpEl.innerText : "Unknown";
+            
+            // Get concerns text
+            const concernsList = document.querySelectorAll('#recentConcerns li');
+            let concerns = [];
+            concernsList.forEach(li => {
+                // Get just the Bengali text part before the <br>
+                const text = li.childNodes[0].textContent.trim();
+                concerns.push(text);
+            });
+            const conditionStr = concerns.length > 0 ? concerns.join(', ') + `. BP: ${bp}` : `BP: ${bp}`;
+
+            const payload = {
+                patient_name: name,
+                address: location,
+                condition: conditionStr
+            };
+
+            try {
+                // Trigger Call
+                await fetch('http://127.0.0.1:8010/api/incoming-call', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                // Start Polling
+                if (emergencyPollInterval) clearInterval(emergencyPollInterval);
+                emergencyPollInterval = setInterval(checkCallStatus, 1000);
+                
+                // Add a system message to chat
+                addMessage("agent", "🚑 Emergency Call Triggered. Connecting to 999 services...");
+
+            } catch (err) {
+                console.error(err);
+                btn.innerHTML = "❌ Failed<br><span style='font-size:0.8em'>Try Again</span>";
+                btn.disabled = false;
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 3000);
+            }
+        }
+
+        async function checkCallStatus() {
+            try {
+                const res = await fetch('http://127.0.0.1:8010/api/call-status');
+                const data = await res.json();
+                const btn = document.getElementById('btn999');
+
+                if (data.status === 'CONNECTED') {
+                    btn.innerHTML = "✅ Connected<br><span style='font-size:0.8em'>Live with Operator</span>";
+                    btn.style.background = "rgba(0, 255, 0, 0.3)";
+                    btn.style.borderColor = "#00ff88";
+                    btn.style.boxShadow = "0 0 15px #00ff88";
+                    
+                    // Add success message if we just connected
+                    if (btn.dataset.status !== 'CONNECTED') {
+                        addMessage("agent", "📞 Call Connected! An operator is speaking with you now.");
+                        btn.dataset.status = 'CONNECTED';
+                    }
+                    
+                    clearInterval(emergencyPollInterval);
+                } 
+                else if (data.status === 'IDLE' && btn.disabled) {
+                    // Call ended remotely or reset
+                    resetEmergencyBtn();
+                }
+            } catch (e) {
+                console.error("Polling error", e);
+            }
+        }
+
+        function resetEmergencyBtn() {
+            const btn = document.getElementById('btn999');
+            if(btn) {
+                btn.innerHTML = "📞 Call 999<br><span style='font-size:0.8em'>Emergency</span>";
+                btn.disabled = false;
+                btn.style.background = "rgba(255, 0, 0, 0.3)";
+                btn.style.borderColor = "red";
+                btn.style.boxShadow = "0 0 10px rgba(255,0,0,0.4)";
+                btn.dataset.status = 'IDLE';
+            }
+            if (emergencyPollInterval) clearInterval(emergencyPollInterval);
+        }
+
+        async function sendToDoctor() {
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;border-width:2px;"></div> Sending...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`/api/medical-report/${USER_ID}/email`, { method: 'POST' });
+                if (!res.ok) throw new Error("Failed to send");
+                const data = await res.json();
+                
+                alert("✅ Alert sent to Doctor's Dashboard successfully!");
+            } catch (e) {
+                console.error(e);
+                alert("❌ Error sending email: " + e.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        async function generateMedicalReport() {
+            const modal = document.getElementById('reportModal');
+            const content = document.getElementById('reportContent');
+            modal.style.display = 'block';
+            content.innerHTML = '<div style="text-align:center; padding:40px;"><div class="spinner"></div><p>Gemini 3 is analyzing 90 days of patient data (1M+ context)...</p></div>';
+            
+            try {
+                const res = await fetch(`/api/medical-report/${USER_ID}`, { method: 'POST' });
+                if (!res.ok) throw new Error("Analysis failed");
+                const data = await res.json();
+                
+                // Format JSON for display
+                let html = '';
+                
+                // 1. Metadata
+                html += `<div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; margin-bottom:15px;">
+                    <h3 style="color:#00ff88;">Metadata</h3>
+                    <p>GA: ${data.patient_metadata.gestational_age} weeks | Risks: ${data.patient_metadata.risk_factors.join(', ')}</p>
+                </div>`;
+                
+                // 2. Chief Concern
+                html += `<div style="margin-bottom:20px;">
+                    <h3 style="color:#ffcc00;">Chief Concern Analysis</h3>
+                    <p><strong>Stated:</strong> ${data.chief_concern.stated}</p>
+                    <p><strong>Data Derived:</strong> ${data.chief_concern.data_derived}</p>
+                    ${data.chief_concern.discrepancy_note ? `<p style="color:#ff6b6b;">⚠️ ${data.chief_concern.discrepancy_note}</p>` : ''}
+                </div>`;
+
+                // 3. Temporal Patterns
+                html += `<div style="margin-bottom:20px;">
+                    <h3 style="color:#00d9ff;">Temporal Patterns</h3>
+                    ${data.temporal_patterns.map(p => `
+                        <div style="border-left:3px solid ${p.is_accelerating ? '#ff6b6b' : '#00d9ff'}; padding-left:10px; margin-bottom:10px;">
+                            <strong>${p.metric}</strong>: ${p.trend.toUpperCase()} 
+                            ${p.is_accelerating ? '<span style="color:#ff6b6b; font-weight:bold;">(ACCELERATING)</span>' : ''}<br>
+                            Velocity: ${p.velocity}<br>
+                            <span style="font-style:italic; color:#aaa;">${p.clinical_significance}</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+                
+                // 4. Unreported Concerns
+                if (data.unreported_concerns.length > 0) {
+                     html += `<div style="margin-bottom:20px;">
+                        <h3 style="color:#ff6b6b;">Gap Analysis (Unreported)</h3>
+                        ${data.unreported_concerns.map(u => `
+                            <div style="background:rgba(255,100,100,0.1); padding:10px; border-radius:5px; margin-bottom:5px;">
+                                <strong>${u.concern}</strong> (Last logged: ${u.last_logged.split('T')[0]})<br>
+                                Suggested Question: <em>"${u.suggested_question}"</em>
+                            </div>
+                        `).join('')}
+                    </div>`;
+                }
+
+                // 5. Recommendations
+                html += `<div>
+                    <h3 style="color:#00ff88;">Action Plan</h3>
+                    <ul>
+                    ${data.recommendations.map(r => `
+                        <li style="margin-bottom:10px;">
+                            <strong style="color:${r.type === 'evaluation' ? '#00d9ff' : '#ffcc00'}">[${r.type.toUpperCase()}]</strong> 
+                            ${r.content}<br>
+                            <span style="font-size:0.9em; color:#888;">Rationale: ${r.rationale}</span>
+                        </li>
+                    `).join('')}
+                    </ul>
+                </div>`;
+
+                content.innerHTML = html;
+
+            } catch (e) {
+                console.error(e);
+                content.innerHTML = `<div style="color:red; text-align:center;">Error generating report: ${e.message}</div>`;
+            }
+        }
+
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatText(text) {
+            return escapeHtml(text || "").replace(/\n/g, "<br/>");
+        }
+
+        function getCurrentWeek() {
+            const weekText = document.getElementById('patientWeek')?.innerText || '';
+            const match = weekText.match(/\d+/);
+            return match ? parseInt(match[0], 10) : null;
+        }
+
+        function getCurrentBloodPressure() {
+            const bpText = document.getElementById('patientBP')?.innerText || '';
+            const match = bpText.match(/\d+\s*\/\s*\d+/);
+            return match ? match[0].replace(/\s/g, '') : '';
+        }
+
+        function getRecentSymptoms() {
+            const items = Array.from(document.querySelectorAll('#recentConcerns li'));
+            return items.map(item => item.innerText.replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim()).filter(Boolean);
+        }
+
+        async function fetchPatientState() {
+            try {
+                const res = await fetch(`/api/agent/state/${encodeURIComponent(USER_ID)}`);
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function fetchDocumentProfile() {
+            try {
+                const res = await fetch(`/api/profile/my-profile?user_id=${encodeURIComponent(USER_ID)}`);
+                if (!res.ok) return null;
+                const data = await res.json();
+                if (!data || !data.has_profile) return null;
+                return data.profile_data || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function normalizeProfileEntries(profileData) {
+            if (!profileData) return [];
+            const entries = [];
+            const items = Array.isArray(profileData) ? profileData : [profileData];
+            items.forEach((item) => {
+                const structured = item.structured_info || item;
+                if (!structured || typeof structured !== 'object') return;
+                const symptoms = []
+                    .concat(structured.medical_conditions || [])
+                    .concat(structured.past_medical_history || [])
+                    .concat(structured.family_history || [])
+                    .concat(structured.current_medications || []);
+                entries.push({
+                    week: structured.week || null,
+                    blood_pressure: structured.blood_pressure || null,
+                    symptoms: symptoms.filter(Boolean),
+                    notes: structured.notes || structured.patient_name || structured.trimester || ''
+                });
+            });
+            return entries;
+        }
+
+        function normalizeStateEntries(stateData) {
+            if (!stateData) return [];
+            const entries = [];
+            const baseWeek = stateData.weeks_pregnant || null;
+            const baseBP = stateData.blood_pressure || null;
+            const emergencies = Array.isArray(stateData.emergency_sessions) ? stateData.emergency_sessions : [];
+            emergencies.forEach((e) => {
+                const time = (e.timestamp || '').slice(0, 10);
+                const type = e.type || 'Emergency';
+                const severity = e.severity ? ` (${e.severity})` : '';
+                entries.push({
+                    week: baseWeek,
+                    blood_pressure: baseBP,
+                    symptoms: [],
+                    notes: `${type}${severity}${time ? ` on ${time}` : ''}`
+                });
+            });
+            const plans = Array.isArray(stateData.care_plan_history) ? stateData.care_plan_history : [];
+            plans.forEach((p) => {
+                entries.push({
+                    week: p.week || baseWeek,
+                    blood_pressure: baseBP,
+                    symptoms: [],
+                    notes: `Care plan generated${p.generated_at ? ` on ${String(p.generated_at).slice(0, 10)}` : ''}`
+                });
+            });
+            const uploads = Array.isArray(stateData.uploaded_documents) ? stateData.uploaded_documents : [];
+            uploads.forEach((u) => {
+                entries.push({
+                    week: baseWeek,
+                    blood_pressure: baseBP,
+                    symptoms: [],
+                    notes: `Document: ${u.filename || 'upload'}${u.uploaded_at ? ` on ${String(u.uploaded_at).slice(0, 10)}` : ''}`
+                });
+            });
+            return entries;
+        }
+
+        function buildCausalHtmlFromResponse(data) {
+            const steps = Array.isArray(data?.steps) ? data.steps : [];
+            const stepsHtml = steps.map((step) => {
+                const title = step.title || '';
+                const findings = step.findings || step.timeline || step.mechanisms || step.diagnoses || [];
+                let details = '';
+                if (Array.isArray(findings)) {
+                    details = findings.map(item => `<div style="opacity:0.85; font-size:0.8rem;">- ${escapeHtml(typeof item === 'string' ? item : JSON.stringify(item))}</div>`).join('');
+                } else if (findings) {
+                    details = `<div style="opacity:0.85; font-size:0.8rem;">${escapeHtml(JSON.stringify(findings))}</div>`;
+                }
+                if (step.recommendation && typeof step.recommendation === 'object') {
+                    const rec = step.recommendation;
+                    const actions = Array.isArray(rec.actions) ? rec.actions.map(a => `<div style="opacity:0.85; font-size:0.8rem;">- ${escapeHtml(a)}</div>`).join('') : '';
+                    details += `
+                        <div style="opacity:0.85; font-size:0.8rem;">Summary: ${escapeHtml(rec.summary || '')}</div>
+                        <div style="opacity:0.85; font-size:0.8rem;">Urgency: ${escapeHtml(rec.urgency || '')}</div>
+                        ${actions}
+                    `;
+                }
+                return `
+                    <div class="causal-step">
+                        <div><strong>Step ${step.step || ''}:</strong> ${escapeHtml(title)}</div>
+                        ${details}
+                    </div>
+                `;
+            }).join('');
+            return `
+                <div style="font-weight:700; margin-bottom:8px;">Causal Reasoning Analysis</div>
+                ${stepsHtml || '<div style="opacity:0.85;">No analysis steps returned.</div>'}
+            `;
+        }
+
+        async function loadCausalAnalysis() {
+            if (causalLoading) return;
+            causalLoading = true;
+            const section = document.getElementById('chatCausalSection');
+            if (!section) return;
+            section.innerHTML = '<div class="tool-text">⏳ বিশ্লেষণ হচ্ছে... / Analyzing...</div>';
+            const week = getCurrentWeek();
+            const bp = getCurrentBloodPressure();
+            const symptoms = getRecentSymptoms();
+            const [stateData, profileData] = await Promise.all([
+                fetchPatientState(),
+                fetchDocumentProfile()
+            ]);
+            const historyEntries = [
+                ...normalizeProfileEntries(profileData),
+                ...normalizeStateEntries(stateData)
+            ].filter(e => e && (e.week || e.blood_pressure || (e.symptoms && e.symptoms.length) || e.notes));
+            if (!historyEntries.length) {
+                historyEntries.push({
+                    week: week,
+                    blood_pressure: bp || null,
+                    symptoms: symptoms,
+                    notes: "Initial intake from current session"
+                });
+            }
+            const payload = {
+                patient_id: USER_ID,
+                current_vitals: {
+                    blood_pressure: bp || "0/0",
+                    protein_urine: "unknown",
+                    edema: "unknown",
+                    headache: symptoms.find(s => s.includes('মাথা')) ? "yes" : "unknown",
+                    gestational_week: week
+                },
+                patient_history: historyEntries,
+                baseline_vitals: bp ? { blood_pressure: bp } : null
+            };
+            try {
+                const res = await fetch('/api/causal-analysis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    section.innerHTML = `<div class="tool-text">❌ ${escapeHtml(err.detail || 'Causal analysis failed')}</div>`;
+                    causalLoading = false;
+                    return;
+                }
+                const data = await res.json();
+                causalCache = data;
+                section.innerHTML = buildCausalHtmlFromResponse(data);
+            } catch (e) {
+                section.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                console.error(e);
+            } finally {
+                causalLoading = false;
+            }
+        }
+
+        function toggleCausal() {
+            const section = document.getElementById('chatCausalSection');
+            if (!section) return;
+            const isHidden = section.style.display === 'none';
+            section.style.display = isHidden ? 'block' : 'none';
+            if (isHidden && !causalCache) {
+                loadCausalAnalysis();
+            }
+        }
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
+            messageDiv.innerHTML = `
+                <div class="message-sender">${isUser ? '👤 রাহিমা (Rahima)' : '🧠 Janani Agent (AI Midwife)'}</div>
+                <div class="message-bubble">${formatText(text)}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addHtmlMessage(html, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
+            messageDiv.innerHTML = `
+                <div class="message-sender">${isUser ? '👤 রাহিমা (Rahima)' : '🧠 Janani Agent (AI Midwife)'}</div>
+                <div class="message-bubble">${html}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function renderToolResult(payload) {
+            const rawResult = payload && payload.tool_result ? payload.tool_result : null;
+            const toolName = payload && payload.tool_executed ? payload.tool_executed : (rawResult && rawResult.tool_name ? rawResult.tool_name : null);
+            if (!rawResult && !toolName) return;
+            const message = rawResult && rawResult.message ? rawResult.message : "";
+            let data = null;
+            if (rawResult && rawResult.data) {
+                data = rawResult.data;
+            } else if (rawResult && typeof rawResult === "object") {
+                data = rawResult;
+            }
+            const title = toolName ? `🔧 ${escapeHtml(toolName)}` : "🔧 Tool Result";
+            const messageHtml = message ? `<div class="tool-text">${formatText(message)}</div>` : "";
+            let dataHtml = data ? `<pre class="tool-json">${escapeHtml(JSON.stringify(data, null, 2))}</pre>` : "";
+            if (toolName === "GET_CARE_PLAN" && data) {
+                const checklist = Array.isArray(data.weekly_checklist) ? data.weekly_checklist : [];
+                const checklistHtml = checklist.map((item) => {
+                    const title = item.title_bengali || item.title_english || "";
+                    const desc = item.description_bengali || item.description_english || "";
+                    return `
+                        <div style="padding:8px 10px; border-radius:8px; background:rgba(255,255,255,0.05); margin-bottom:6px;">
+                            <div style="font-weight:600;">${escapeHtml(title)}</div>
+                            ${desc ? `<div style="font-size:12px; opacity:0.8;">${escapeHtml(desc)}</div>` : ""}
+                        </div>
+                    `;
+                }).join("");
+                dataHtml = `
+                    <div style="margin-top:8px;">
+                        <div style="font-weight:700; margin-bottom:6px;">${escapeHtml(data.week_title_bengali || "")}</div>
+                        <div style="font-size:12px; opacity:0.9; margin-bottom:6px;">${escapeHtml(data.week_summary_bengali || "")}</div>
+                        <div style="margin-bottom:6px;"><strong>🍼</strong> ${escapeHtml(data.baby_development_bengali || "")}</div>
+                        <div style="margin-bottom:10px;"><strong>👩</strong> ${escapeHtml(data.mother_changes_bengali || "")}</div>
+                        ${checklistHtml ? `<div style="margin-top:8px;"><div style="font-weight:600; margin-bottom:6px;">✅ করণীয়</div>${checklistHtml}</div>` : ""}
+                    </div>
+                `;
+            }
+
+            if (toolName === "UPDATE_PROFILE" && data) {
+                const entries = Object.entries(data).map(([key, value]) => {
+                    let displayValue = value;
+                    if (Array.isArray(value)) {
+                        displayValue = value.join(", ");
+                    } else if (value && typeof value === "object") {
+                        displayValue = JSON.stringify(value);
+                    }
+                    return `
+                        <div style="display:flex; gap:8px; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.08);">
+                            <div style="width:140px; opacity:0.8;">${escapeHtml(key)}</div>
+                            <div style="flex:1;">${escapeHtml(String(displayValue))}</div>
+                        </div>
+                    `;
+                }).join("");
+                dataHtml = `<div style="margin-top:8px;">${entries}</div>`;
+            }
+
+            if (toolName === "GENERATE_FOOD_MENU" && data && Array.isArray(data.menu_items)) {
+                const itemsHtml = data.menu_items.map((item) => {
+                    const name = item.name_bangla || item.name_bengali || item.name_english || item.name || "";
+                    const price = item.price_bdt || "";
+                    const benefits = item.benefits_key || item.benefits || "";
+                    const image = item.image_url || "";
+                    return `
+                        <div style="display:flex; gap:12px; align-items:center; padding:10px; border-radius:10px; background:rgba(255,255,255,0.05); margin-bottom:8px;">
+                            ${image ? `<img src="${escapeHtml(image)}" alt="" style="width:56px; height:56px; border-radius:10px; object-fit:cover;">` : ""}
+                            <div>
+                                <div style="font-weight:700; color:#fff;">${escapeHtml(name)}</div>
+                                <div style="font-size:12px; opacity:0.8;">${escapeHtml(benefits)}</div>
+                                ${price ? `<div style="font-size:12px; margin-top:4px;">৳${escapeHtml(price)}</div>` : ""}
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+                dataHtml = `<div style="margin-top:8px;">${itemsHtml}</div>`;
+            }
+            addHtmlMessage(`
+                <div class="tool-card">
+                    <div class="tool-title">${title}</div>
+                    ${messageHtml}
+                    ${dataHtml}
+                </div>
+            `);
+        }
+
+        function addAudioMessage(audioBase64) {
+            if (!audioBase64) return;
+            addHtmlMessage(`
+                <div class="tool-card">
+                    <div class="tool-title">🔊 Voice Reply</div>
+                    <audio controls src="data:audio/mp3;base64,${audioBase64}"></audio>
+                </div>
+            `);
+        }
+
+        function handleEmergencyRedirect(payload) {
+            if (!payload) return;
+            const toolName = payload.tool_executed || "";
+            const toolResult = payload.tool_result || {};
+            const emergencyRedirect = toolResult.emergency_redirect || (toolResult.data && toolResult.data.emergency_redirect);
+            const emergencyActivated = payload.emergency_activated || toolResult.emergency_activated || (toolResult.data && toolResult.data.emergency_activated);
+            if (toolName === "ACTIVATE_EMERGENCY" || emergencyActivated) {
+                const target = emergencyRedirect || "http://localhost:8000/ar-dashboard";
+                setTimeout(() => {
+                    window.location.href = target;
+                }, 800);
+            }
+        }
+
+        async function sendMessage() {
+            const query = chatInput.value.trim();
+            if (!query) return;
+
+            addMessage(query, true);
+            chatInput.value = '';
+            loading.classList.add('show');
+
+            try {
+                const response = await fetch('/api/agent/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        user_id: USER_ID
+                    })
+                });
+
+                const data = await response.json();
+                loading.classList.remove('show');
+                if (data.response) {
+                    addMessage(data.response);
+                }
+                renderToolResult(data);
+                handleEmergencyRedirect(data);
+                executeAgentCommands(data);
+
+            } catch (error) {
+                loading.classList.remove('show');
+                addMessage('দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                console.error(error);
+            }
+        }
+
+        function sendQuickMessage(text) {
+            chatInput.value = text;
+            sendMessage();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function toggleVoice() {
+            if (isRecording && mediaRecorder) {
+                mediaRecorder.stop();
+                return;
+            }
+            try {
+                activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(activeStream);
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data && event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+                mediaRecorder.onstop = async () => {
+                    const blob = new Blob(recordedChunks, { type: recordedChunks[0]?.type || 'audio/webm' });
+                    if (activeStream) {
+                        activeStream.getTracks().forEach(track => track.stop());
+                        activeStream = null;
+                    }
+                    isRecording = false;
+                    voiceBtn.classList.remove('recording');
+                    await sendVoiceAudio(blob);
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                voiceBtn.classList.add('recording');
+            } catch (error) {
+                addMessage('মাইক্রোফোন অ্যাক্সেস পাওয়া যায়নি।', false);
+                console.error(error);
+            }
+        }
+
+        function blobToDataUrl(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        async function sendVoiceAudio(audioBlob) {
+            if (!audioBlob) return;
+            loading.classList.add('show');
+            voiceBtn.disabled = true;
+            try {
+                const dataUrl = await blobToDataUrl(audioBlob);
+                const response = await fetch('/api/agent/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: USER_ID,
+                        query: "",
+                        audio_base64: dataUrl
+                    })
+                });
+                const data = await response.json();
+                loading.classList.remove('show');
+                voiceBtn.disabled = false;
+                if (data.transcription) {
+                    addMessage(data.transcription, true);
+                }
+                if (data.response) {
+                    addMessage(data.response);
+                }
+                addAudioMessage(data.audio_base64);
+                renderToolResult(data);
+                handleEmergencyRedirect(data);
+                executeAgentCommands(data);
+            } catch (error) {
+                loading.classList.remove('show');
+                voiceBtn.disabled = false;
+                addMessage('দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+                console.error(error);
+            }
+        }
+
+        // Load patient state on page load
+        async function loadPatientState() {
+            try {
+                const response = await fetch(`/api/agent/state/${USER_ID}`);
+                const state = await response.json();
+
+                // Update UI with state
+                if (state.name) {
+                    document.getElementById('patientName').textContent = state.name;
+                }
+                if (state.weeks_pregnant) {
+                    document.getElementById('patientWeek').textContent = `সপ্তাহ ${state.weeks_pregnant} • তৃতীয় ট্রাইমেস্টার`;
+                }
+                if (state.blood_pressure) {
+                    document.getElementById('patientBP').textContent = state.blood_pressure;
+                }
+
+            } catch (error) {
+                console.log('Could not load patient state:', error);
+            }
+        }
+
+        loadPatientState();
+
+        function executeAgentCommands(data) {
+            const action = data && (data.action || data.action_tag) ? (data.action || data.action_tag) : "";
+            if (!action || action === "NONE") return;
+
+            if (action === "NAVIGATE_AR_DASHBOARD") {
+                setTimeout(() => {
+                    window.location.href = "/ar-dashboard";
+                }, 800);
+            } else if (action === "NAVIGATE_CARE_PLAN") {
+                if (typeof openFeatureTab === "function") {
+                    openFeatureTab("care");
+                }
+            } else if (action === "SHOW_FOOD_MENU") {
+                if (typeof openFeatureTab === "function") {
+                    openFeatureTab("food");
+                }
+            }
+        }
+
+        // ==================== FastAPI Features Panel ====================
+        // Simple tabbed panel to access existing FastAPI endpoints
+        document.addEventListener('DOMContentLoaded', () => {
+            const panel = document.createElement('div');
+            panel.style.marginTop = '20px';
+            panel.style.background = 'rgba(255,255,255,0.05)';
+            panel.style.border = '1px solid rgba(255,255,255,0.1)';
+            panel.style.borderRadius = '20px';
+            panel.style.overflow = 'hidden';
+            panel.innerHTML = `
+                <div style="background: rgba(0, 217, 255, 0.1); padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <h2 style="color:#00d9ff; font-size:1.1rem;">⚙️ FastAPI Features</h2>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; padding: 16px;">
+                    <button class="quick-btn" onclick="openFeatureTab('care')">📅 Care Plan</button>
+                    <button class="quick-btn" onclick="openFeatureTab('triage')">🩺 Triage</button>
+                    <button class="quick-btn" onclick="openFeatureTab('food')">🍎 Food Safety</button>
+                    <button class="quick-btn" onclick="openFeatureTab('foodImg')">🖼️ Food Image Check</button>
+                    <button class="quick-btn" onclick="openFeatureTab('doc')">📄 Documents</button>
+                    <button class="quick-btn" onclick="window.location.href='/ar-dashboard'">🏥 AR Dashboard</button>
+                </div>
+                <div id="featuresContent" style="padding: 16px;">
+                    <!-- Care Plan -->
+                    <div id="tab-care" style="display:none;">
+                        <div style="margin-bottom:8px;">সপ্তাহ লিখুন:</div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input id="careWeekInput" type="number" min="1" max="42" value="40" style="flex:0; width:100px; padding:8px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:#fff;">
+                            <button class="quick-btn" onclick="fetchCarePlan()">Get Care Plan</button>
+                        </div>
+                        <div id="carePlanResult" style="margin-top:12px;"></div>
+                    </div>
+                    <!-- Triage -->
+                    <div id="tab-triage" style="display:none;">
+                        <div style="margin-bottom:8px;">লক্ষণ লিখুন:</div>
+                        <textarea id="triageText" rows="3" style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:#fff;"></textarea>
+                        <div style="margin-top:8px;">
+                            <button class="quick-btn" onclick="runTriage()">Run Triage</button>
+                        </div>
+                    <div id="triageResult" style="margin-top:12px;"></div>
+                    </div>
+                    <!-- Food Safety -->
+                    <div id="tab-food" style="display:none;">
+                        <div style="margin-bottom:8px;">খাবারের নাম লিখুন:</div>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input id="foodNameInput" type="text" placeholder="উদাহরণ: ইলিশ" style="flex:1; padding:8px; border-radius:10px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:#fff;">
+                            <button class="quick-btn" onclick="checkFoodText()">Check Safety</button>
+                        </div>
+                        <div id="foodSafetyResult" style="margin-top:12px;"></div>
+                    </div>
+                    <!-- Food Image -->
+                    <div id="tab-foodImg" style="display:none;">
+                        <div style="margin-bottom:8px;">খাবারের ছবি আপলোড করুন:</div>
+                        <input id="foodImageFile" type="file" accept="image/*" style="margin-bottom:8px;">
+                        <div>
+                            <button class="quick-btn" onclick="checkFoodImage()">Analyze Image</button>
+                        </div>
+                        <div id="foodImageResult" style="margin-top:12px;"></div>
+                    </div>
+                    <!-- Documents -->
+                    <div id="tab-doc" style="display:none;">
+                        <div style="margin-bottom:8px;">মেডিকেল ডকুমেন্ট (.doc/.docx) আপলোড করুন:</div>
+                        <input id="docFile" type="file" accept=".doc,.docx" style="margin-bottom:8px;">
+                        <div>
+                            <button class="quick-btn" onclick="uploadDocument()">Upload</button>
+                        </div>
+                        <div id="docUploadResult" style="margin-top:12px;"></div>
+                    </div>
+                </div>
+            `;
+            document.querySelector('.container').appendChild(panel);
+        });
+
+        function openFeatureTab(id) {
+            ['care','triage','food','foodImg','doc'].forEach(t => {
+                const el = document.getElementById('tab-' + t);
+                if (el) el.style.display = (t === id) ? 'block' : 'none';
+            });
+        }
+
+        async function fetchCarePlan() {
+            const week = parseInt(document.getElementById('careWeekInput').value || '0', 10);
+            const resultDiv = document.getElementById('carePlanResult');
+            resultDiv.innerHTML = '<div class="tool-text">⏳ লোড হচ্ছে...</div>';
+            try {
+                const res = await fetch(`/api/midwife/care-plan/${USER_ID}/week/${week}`);
+                const data = await res.json();
+                if (!data.success) {
+                    resultDiv.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                    return;
+                }
+                const plan = data.care_plan || {};
+                const checklist = Array.isArray(plan.weekly_checklist) ? plan.weekly_checklist : [];
+                const checklistHtml = checklist.map((item) => {
+                    const title = item.title_bengali || item.title_english || '';
+                    const desc = item.description_bengali || '';
+                    return `<div style="padding:8px 10px; border-radius:8px; background:rgba(255,255,255,0.05); margin-bottom:6px;">
+                        <div style="font-weight:600;">${escapeHtml(title)}</div>
+                        ${desc ? `<div style="font-size:12px; opacity:0.8;">${escapeHtml(desc)}</div>` : ""}
+                    </div>`;
+                }).join('');
+                resultDiv.innerHTML = `
+                    <div class="tool-card">
+                        <div class="tool-title">📅 Care Plan (Week ${escapeHtml(String(plan.week_number || week))})</div>
+                        <div style="font-weight:700; margin-bottom:6px;">${escapeHtml(plan.week_title_bengali || '')}</div>
+                        <div style="font-size:12px; opacity:0.9; margin-bottom:6px;">${escapeHtml(plan.week_summary_bengali || '')}</div>
+                        <div style="margin-bottom:6px;"><strong>🍼</strong> ${escapeHtml(plan.baby_development_bengali || '')}</div>
+                        <div style="margin-bottom:10px;"><strong>👩</strong> ${escapeHtml(plan.mother_changes_bengali || '')}</div>
+                        ${checklistHtml ? `<div style="margin-top:8px;"><div style="font-weight:600; margin-bottom:6px;">✅ করণীয়</div>${checklistHtml}</div>` : ""}
+                    </div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                console.error(e);
+            }
+        }
+
+        async function runTriage() {
+            const text = document.getElementById('triageText').value.trim();
+            const resultDiv = document.getElementById('triageResult');
+            if (!text) return;
+            resultDiv.innerHTML = '<div class="tool-text">⏳ লোড হচ্ছে...</div>';
+            try {
+                const res = await fetch('/api/midwife/triage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: USER_ID, input_type: 'text', input_text: text, include_history: true })
+                });
+                const data = await res.json();
+                const msg = data.message || '';
+                const risk = data.risk_level || '';
+                let extra = '';
+                if (data.emergency_activated && data.emergency_bridge) {
+                    extra = `<div style="margin-top:10px; color:#e94560;">🚨 জরুরি: ${escapeHtml(data.emergency_bridge.immediate_steps_bengali?.[0] || '')}</div>`;
+                    setTimeout(() => { window.location.href = '/ar-dashboard'; }, 800);
+                }
+                resultDiv.innerHTML = `
+                    <div class="tool-card">
+                        <div class="tool-title">🩺 Triage (Risk: ${escapeHtml(risk)})</div>
+                        <div class="tool-text">${formatText(msg)}</div>
+                        ${extra}
+                    </div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                console.error(e);
+            }
+        }
+
+        async function checkFoodText() {
+            const name = document.getElementById('foodNameInput').value.trim();
+            const resultDiv = document.getElementById('foodSafetyResult');
+            if (!name) return;
+            resultDiv.innerHTML = '<div class="tool-text">⏳ লোড হচ্ছে...</div>';
+            try {
+                const res = await fetch(`/api/food/check-safety/${encodeURIComponent(name)}?trimester=third&user_id=${encodeURIComponent(USER_ID)}`);
+                const data = await res.json();
+                const safe = String(data.safety || '').toLowerCase();
+                const verdict = safe === 'safe' ? '✅ নিরাপদ' : safe === 'caution' ? '⚠️ সতর্কতা' : '❌ এড়িয়ে চলুন';
+                const expl = data.explanation_bengali || '';
+                const alts = (data.alternatives || []).join(', ');
+                resultDiv.innerHTML = `
+                    <div class="tool-card">
+                        <div class="tool-title">🍎 Food Safety</div>
+                        <div class="tool-text"><strong>${escapeHtml(verdict)}</strong></div>
+                        <div class="tool-text">${escapeHtml(expl)}</div>
+                        ${alts ? `<div class="tool-text">বিকল্প: ${escapeHtml(alts)}</div>` : ''}
+                    </div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                console.error(e);
+            }
+        }
+
+        async function checkFoodImage() {
+            const file = document.getElementById('foodImageFile').files[0];
+            const resultDiv = document.getElementById('foodImageResult');
+            if (!file) return;
+            resultDiv.innerHTML = '<div class="tool-text">⏳ লোড হচ্ছে...</div>';
+            try {
+                const form = new FormData();
+                form.append('image', file);
+                const res = await fetch('/api/vision/food/analyze', { method: 'POST', body: form });
+                const data = await res.json();
+                if (!data.success) {
+                    resultDiv.innerHTML = `<div class="tool-text">❌ ${escapeHtml(data.error || 'সমস্যা হয়েছে')}</div>`;
+                    return;
+                }
+                const verdict = data.pregnancy_safe ? '✅ নিরাপদ' : '❌ নিরাপদ নয়';
+                const warnings = Array.isArray(data.warnings) ? data.warnings.filter(Boolean) : [];
+                const benefits = Array.isArray(data.nutritional_benefits) ? data.nutritional_benefits.filter(Boolean) : [];
+                resultDiv.innerHTML = `
+                    <div class="tool-card">
+                        <div class="tool-title">🖼️ Food Image Check</div>
+                        <div class="tool-text"><strong>${verdict}</strong></div>
+                        ${data.recommendations ? `<div class="tool-text">${escapeHtml(data.recommendations)}</div>` : ''}
+                        ${benefits.length ? `<div class="tool-text">পুষ্টিগুণ: ${escapeHtml(benefits.join(', '))}</div>` : ''}
+                        ${warnings.length ? `<div class="tool-text">সতর্কতা: ${escapeHtml(warnings.join(', '))}</div>` : ''}
+                    </div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                console.error(e);
+            }
+        }
+
+        async function uploadDocument() {
+            const file = document.getElementById('docFile').files[0];
+            const resultDiv = document.getElementById('docUploadResult');
+            if (!file) return;
+            resultDiv.innerHTML = '<div class="tool-text">⏳ আপলোড হচ্ছে...</div>';
+            try {
+                const form = new FormData();
+                form.append('file', file);
+                form.append('user_id', USER_ID);
+                const res = await fetch('/api/profile/upload-document', { method: 'POST', body: form });
+                const data = await res.json();
+                if (!data.success) {
+                    resultDiv.innerHTML = `<div class="tool-text">❌ ${escapeHtml(data.message_bengali || 'সমস্যা হয়েছে')}</div>`;
+                    return;
+                }
+                const summary = data.bengali_summary || '';
+                resultDiv.innerHTML = `
+                    <div class="tool-card">
+                        <div class="tool-title">📄 Document Uploaded</div>
+                        <div class="tool-text">${escapeHtml(data.message_bengali || 'আপলোড সম্পন্ন')}</div>
+                        ${summary ? `<div class="tool-text">${escapeHtml(summary)}</div>` : ''}
+                    </div>
+                `;
+            } catch (e) {
+                resultDiv.innerHTML = '<div class="tool-text">❌ সমস্যা হয়েছে</div>';
+                console.error(e);
+            }
+        }
+    </script>
+</body>
+
+</html>
